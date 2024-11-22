@@ -8,34 +8,19 @@ import placeholderAudio from "../dev/placeholder-audio.mp3";
 export function AudioPlayer({ audioURL, progress=0 }){
     const audioElement = useRef(null);
     const audioSlider = useRef(null);
-    const [playbackSliderMax, setPlaybackSliderMax] = useState(1);
+    const [playbackSliderMax, setPlaybackSliderMax] = useState(progress);
     const [play, setPlay] = useState(false);
-    // const durationRatio = useRef();
 
-    // function handleSliderClick(event){
-    //     if (play) audioElement.current.pause();
 
-    //     console.log("Clicked", event.target.value)
-    // };
+    useEffect(()=>{
+        audioElement.current.fastSeek(progress);
+    }, [progress])
 
-    // function handleSliderRelease(event){
-    //     const sliderPos = event.target.value;
-    //     console.log("release poistion", sliderPos)
-    //     // console.log("trying to set", (sliderPos * durationRatio.current))
-    //     audioElement.current.fastSeek(sliderPos);
 
-    //     setPlaybackSliderPosition(sliderPos);
-
-    //     if (play) {
-    //         audioElement.current.play()
-    //         .catch((error)=>{console.error("playback slider release failed", error)});
-    //     };
-    // };
-
-    // function sliderChange(event){
-    //     console.log("sliderChange: Now at", event.target.value)
-    //     setPlaybackSliderPosition(event.target.value)
-    // };
+    function sliderChange(event){
+        audioElement.current.fastSeek(event.target.value)
+        console.log("sliderChange: Now at", event.target.value)
+    };
 
     function handlePlayPause(event){
         if (play){  // Asking for pause action
@@ -52,7 +37,7 @@ export function AudioPlayer({ audioURL, progress=0 }){
     };
 
     function audioSliderUpdate(event){
-        audioSlider.current.value = event.target.currentTime;
+        audioSlider.current.value = event.target.currentTime.toString();
     };
 
     function handleLoaded(event){   // When ready to play
@@ -68,9 +53,7 @@ export function AudioPlayer({ audioURL, progress=0 }){
 
         <div className="h-16 w-full bg-gray-700">
 
-            <IconButton
-                onClick={handlePlayPause}    
-            >
+            <IconButton onClick={handlePlayPause} >
                 <i className={play ? "fas fa-pause": "fas fa-play"} />
             </IconButton>
             
@@ -81,25 +64,17 @@ export function AudioPlayer({ audioURL, progress=0 }){
                 defaultValue={progress}
                 min={0}
                 max={playbackSliderMax}
-                // onChange={sliderChange}
-                // onMouseDown={handleSliderClick}
-                // onMouseUp={handleSliderRelease}
+                onChange={sliderChange}
             />
-            
 
-            <audio 
+
+            <audio
                 ref={audioElement}
                 src={placeholderAudio}
                 onCanPlay={handleLoaded}
                 onTimeUpdate={audioSliderUpdate}
-            >
-
-            </audio>
+                onEnded={handlePlayPause}
+            ></audio>
         </div>
     );
-};
-
-
-function ActiveSlider(){
-
 };
