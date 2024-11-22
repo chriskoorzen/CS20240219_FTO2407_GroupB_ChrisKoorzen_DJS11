@@ -4,7 +4,6 @@ import {
     Menu,
     MenuHandler,
     MenuList,
-    MenuItem,
     Button,
 } from "@material-tailwind/react";
 
@@ -20,7 +19,7 @@ export function AudioPlayer({ audioURL, progress=0 }){
     const [volume, setVolume] = useState(0.5)
     const [play, setPlay] = useState(false);
 
-
+    console.log("reload")
     useEffect(()=>{
         audioElement.current.fastSeek(progress);
     }, [progress])
@@ -49,7 +48,7 @@ export function AudioPlayer({ audioURL, progress=0 }){
         audioSlider.current.value = event.target.currentTime;
     };
 
-    function handleAudioLoaded(event){   // When ready to play
+    function audioMetaDataLoad(event){
         console.log("Total duration", event.target.duration);
         if (isNaN(event.target.duration) || !isFinite(event.target.duration)){
             throw new Error("Expected a number for duration")
@@ -62,6 +61,10 @@ export function AudioPlayer({ audioURL, progress=0 }){
         audioElement.current.volume = event.target.value;
         setVolume(parseFloat(event.target.value));
         console.log("volumeSliderDrag: Now at", event.target.value)
+    };
+
+    function slideRelease(event){
+        console.log("slideRelease", event.target.value);
     };
 
     return (
@@ -80,6 +83,7 @@ export function AudioPlayer({ audioURL, progress=0 }){
                 min={0}
                 max={playbackSliderMax}
                 onChange={audioSliderDrag}
+                onMouseUp={slideRelease}
             />
 
             <Menu placement="top" allowHover={true}>
@@ -104,6 +108,7 @@ export function AudioPlayer({ audioURL, progress=0 }){
                             max={1}
                             step={0.05}
                             onChange={volumeSliderDrag}
+                            onMouseUp={slideRelease}
                         />
                 </MenuList>
             </Menu>
@@ -111,7 +116,7 @@ export function AudioPlayer({ audioURL, progress=0 }){
             <audio
                 ref={audioElement}
                 src={placeholderAudio}
-                onCanPlay={handleAudioLoaded}
+                onLoadedMetadata={audioMetaDataLoad}
                 onTimeUpdate={audioSliderUpdate}
                 onEnded={handlePlayPause}
             ></audio>
