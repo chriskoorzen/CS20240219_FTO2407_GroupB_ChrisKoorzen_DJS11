@@ -1,7 +1,7 @@
 /**
  * LocalStorage object structure
  * {
- *      history: Array<[datestamp, Episode]>
+ *      history: Array<[Episode, datestamp]>
  *      favorites: Array<Episode>
  *      progress: Array<[Episode, timestamp]>
  * }
@@ -42,7 +42,7 @@ export function clearHistory(){
 export function pushToHistory(episode, datestamp){
     const history = getStorageObject(historyKey);
 
-    history.push([datestamp, episode]);
+    history.push([episode, datestamp]);
 
     updateStorage(historyKey, history);
 };
