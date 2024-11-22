@@ -9,8 +9,8 @@ import {
 
 import { updateSettings, getSettings } from "../api/storage";
 
-import placeholderAudio from "../dev/placeholder-audio.mp3";
-// import placeholderAudio from "../dev/pitch.mp3";
+// import placeholderAudio from "../dev/placeholder-audio.mp3";
+import placeholderAudio from "../dev/pitch.mp3";
 
 
 export function AudioPlayer({ audioURL, progress=0 }){
@@ -65,7 +65,7 @@ export function AudioPlayer({ audioURL, progress=0 }){
 
     return (
 
-        <div className="flex flex-row gap-4 items-center px-4 mt-72 h-16 w-full bg-gray-700">
+        <div className="flex flex-row gap-4 items-center px-4 h-16 w-fit bg-gray-700">
 
             <IconButton onClick={handlePlayPause} >
                 <i className={play ? "fas fa-pause": "fas fa-play"} />
@@ -123,7 +123,7 @@ function VolumeControl({ audioElement }){
     return (
         <Menu placement="top" allowHover={true}>
             <MenuHandler>
-                <Button className="flex items-center gap-3">
+                <Button className="flex items-center gap-3 outline-none">
                     <i className={
                         volume > 0.35 ? "fas fa-volume-up w-4 text-left":
                         volume > 0 ? "fas fa-volume-down w-4 text-left":
@@ -135,7 +135,7 @@ function VolumeControl({ audioElement }){
             <MenuList className="h-fit min-w-fit">
                     <input
                         ref={volumeSlider}
-                        className="h-28"
+                        className="h-28 outline-none"
                         orient="vertical"
                         type="range"
                         defaultValue={volume}
