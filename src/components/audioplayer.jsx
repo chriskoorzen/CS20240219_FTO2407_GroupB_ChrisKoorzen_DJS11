@@ -1,5 +1,12 @@
 import { useRef, useState, useEffect } from "react";
-import { IconButton, slider, Slider } from "@material-tailwind/react";
+import { 
+    IconButton,
+    Menu,
+    MenuHandler,
+    MenuList,
+    MenuItem,
+    Button,
+} from "@material-tailwind/react";
 
 import placeholderAudio from "../dev/placeholder-audio.mp3";
 // import placeholderAudio from "../dev/pitch.mp3";
@@ -8,7 +15,9 @@ import placeholderAudio from "../dev/placeholder-audio.mp3";
 export function AudioPlayer({ audioURL, progress=0 }){
     const audioElement = useRef(null);
     const audioSlider = useRef(null);
+    const volumeSlider = useRef(null);
     const [playbackSliderMax, setPlaybackSliderMax] = useState(progress);
+    const [volume, setVolume] = useState(0.5)
     const [play, setPlay] = useState(false);
 
 
@@ -17,9 +26,9 @@ export function AudioPlayer({ audioURL, progress=0 }){
     }, [progress])
 
 
-    function sliderChange(event){
+    function audioSliderDrag(event){
         audioElement.current.fastSeek(event.target.value)
-        console.log("sliderChange: Now at", event.target.value)
+        console.log("audioSliderDrag: Now at", event.target.value)
     };
 
     function handlePlayPause(event){
@@ -37,10 +46,10 @@ export function AudioPlayer({ audioURL, progress=0 }){
     };
 
     function audioSliderUpdate(event){
-        audioSlider.current.value = event.target.currentTime.toString();
+        audioSlider.current.value = event.target.currentTime;
     };
 
-    function handleLoaded(event){   // When ready to play
+    function handleAudioLoaded(event){   // When ready to play
         console.log("Total duration", event.target.duration);
         if (isNaN(event.target.duration) || !isFinite(event.target.duration)){
             throw new Error("Expected a number for duration")
@@ -49,9 +58,15 @@ export function AudioPlayer({ audioURL, progress=0 }){
         setPlaybackSliderMax(Math.round(event.target.duration));
     };
 
+    function volumeSliderDrag(event){
+        audioElement.current.volume = event.target.value;
+        setVolume(parseFloat(event.target.value));
+        console.log("volumeSliderDrag: Now at", event.target.value)
+    };
+
     return (
 
-        <div className="h-16 w-full bg-gray-700">
+        <div className="flex flex-row items-center px-4 mt-72 h-16 w-full bg-gray-700">
 
             <IconButton onClick={handlePlayPause} >
                 <i className={play ? "fas fa-pause": "fas fa-play"} />
@@ -64,14 +79,39 @@ export function AudioPlayer({ audioURL, progress=0 }){
                 defaultValue={progress}
                 min={0}
                 max={playbackSliderMax}
-                onChange={sliderChange}
+                onChange={audioSliderDrag}
             />
 
+            <Menu placement="top" allowHover={true}>
+                <MenuHandler>
+                    <Button className="flex items-center gap-3">
+                        <i className={
+                            volume > 0.35 ? "fas fa-volume-up w-4": 
+                            volume > 0 ? "fas fa-volume-down w-4":
+                            "fas fa-volume-off w-4"
+                        }/>
+                        Volume
+                    </Button>
+                </MenuHandler>
+                <MenuList className="h-fit min-w-fit">
+                        <input
+                            ref={volumeSlider}
+                            className="h-28"
+                            orient="vertical"
+                            type="range"
+                            defaultValue={volume}
+                            min={0}
+                            max={1}
+                            step={0.05}
+                            onChange={volumeSliderDrag}
+                        />
+                </MenuList>
+            </Menu>
 
             <audio
                 ref={audioElement}
                 src={placeholderAudio}
-                onCanPlay={handleLoaded}
+                onCanPlay={handleAudioLoaded}
                 onTimeUpdate={audioSliderUpdate}
                 onEnded={handlePlayPause}
             ></audio>
