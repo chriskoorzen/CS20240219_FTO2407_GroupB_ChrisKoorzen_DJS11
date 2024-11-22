@@ -29,22 +29,34 @@ function updateStorage(subKey, newData){
 
 
 // History
+const historyKey = "history";
+
+export function getHistory(){
+    return getStorageObject(historyKey);
+};
+
 export function clearHistory(){
-    updateStorage("history", new Array());  // Just replace with new array
+    updateStorage(historyKey, new Array());  // Just replace with new array
 };
 
 export function pushToHistory(episode, datestamp){
-    const history = getStorageObject("history");
+    const history = getStorageObject(historyKey);
 
     history.push([datestamp, episode]);
 
-    updateStorage("history", history);
+    updateStorage(historyKey, history);
 };
 
 
 //  Listening Progress
+const progressKey = "progress";
+
+export function getListeningProgress(){
+    getStorageObject(progressKey);
+};
+
 export function resetListeningProgress(episode){
-    const progress = getStorageObject("progress");
+    const progress = getStorageObject(progressKey);
 
     const index = progress.findIndex((element)=>{
         let isEpisode = true;
@@ -58,15 +70,15 @@ export function resetListeningProgress(episode){
 
     progress.splice(index, 1);
 
-    updateStorage("progress", progress);
+    updateStorage(progressKey, progress);
 };
 
 export function resetListeningProgressAll(){
-    updateStorage("progress", new Array());
+    updateStorage(progressKey, new Array());
 };
 
 export function updateListeningProgress(episode, timestamp){
-    const progress = getStorageObject("progress");
+    const progress = getStorageObject(progressKey);
 
     const index = progress.findIndex((element)=>{
         let isEpisode = true;
@@ -87,20 +99,26 @@ export function updateListeningProgress(episode, timestamp){
 
     progress[index][1] = timestamp;
 
-    updateStorage("progress", progress);
+    updateStorage(progressKey, progress);
 };
 
 // Favorites
+const favoritesKey = "favorites";
+
+export function getFavorites(){
+    return getStorageObject(favoritesKey);
+};
+
 export function saveFavorites(episode){
-    const favorites = getStorageObject("favorites");
+    const favorites = getStorageObject(favoritesKey);
 
     favorites.push(episode);
 
-    updateStorage("favorites", favorites);
+    updateStorage(favoritesKey, favorites);
 };
 
 export function removeFavorites(episode){
-    const favorites = getStorageObject("favorites");
+    const favorites = getStorageObject(favoritesKey);
 
     const index = favorites.findIndex((element)=>{
         let isEpisode = true;
@@ -114,9 +132,9 @@ export function removeFavorites(episode){
 
     favorites.splice(index, 1);
 
-    updateStorage("favorites", favorites);
+    updateStorage(favoritesKey, favorites);
 };
 
 export function clearFavorites(){
-    updateStorage("favorites", new Array());
+    updateStorage(favoritesKey, new Array());
 };
