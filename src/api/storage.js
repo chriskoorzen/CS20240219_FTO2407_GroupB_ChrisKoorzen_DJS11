@@ -4,6 +4,7 @@
  *      history: Array<[Episode, datestamp]>
  *      favorites: Array<Episode>
  *      progress: Array<[Episode, timestamp]>
+ *      settings: {...propNames}
  * }
  */
 
@@ -12,7 +13,10 @@ const storageKey = "QCast_data";
 function getStorageObject(subKey){
     const data = JSON.parse(localStorage.getItem(storageKey));
 
-    if (data[subKey] === undefined){
+    if ( data===null || (data[subKey]===undefined) ){
+        if (subKey === settingsKey){
+            return new Object();
+        };
         return new Array();
     };
 
@@ -20,7 +24,11 @@ function getStorageObject(subKey){
 };
 
 function updateStorage(subKey, newData){
-    const data = JSON.parse(localStorage.getItem(storageKey));
+    let data = JSON.parse(localStorage.getItem(storageKey));
+
+    if (data===null){
+        data = new Object();
+    };
     
     data[subKey] = newData;
     
@@ -137,4 +145,22 @@ export function removeFavorites(episode){
 
 export function clearFavorites(){
     updateStorage(favoritesKey, new Array());
+};
+
+// Settings
+const settingsKey = "settings";
+
+export function updateSettings(key, value){
+    const settings = getStorageObject(settingsKey);
+
+    settings[key] = value;
+
+    updateStorage(settingsKey, settings);
+
+};
+
+export function getSettings(key){
+    const settings = getStorageObject(settingsKey);
+
+    return settings[key];
 };

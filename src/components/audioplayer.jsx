@@ -7,6 +7,8 @@ import {
     Button,
 } from "@material-tailwind/react";
 
+import { updateSettings, getSettings } from "../api/storage";
+
 import placeholderAudio from "../dev/placeholder-audio.mp3";
 // import placeholderAudio from "../dev/pitch.mp3";
 
@@ -92,8 +94,11 @@ export function AudioPlayer({ audioURL, progress=0 }){
 };
 
 
-function VolumeControl({audioElement}){
-    const [volume, setVolume] = useState(0.5);
+function VolumeControl({ audioElement }){
+    const savedVolume = getSettings("volume");
+    const [volume, setVolume] = useState(
+        savedVolume ? savedVolume : 0.5
+    );
     const volumeSlider = useRef(null);
 
     function volumeSliderDrag(event){
@@ -104,6 +109,7 @@ function VolumeControl({audioElement}){
 
     function slideRelease(event){
         console.log("volume slideRelease", event.target.value);
+        updateSettings("volume", event.target.value);
     };
 
     return (
