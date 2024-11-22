@@ -5,7 +5,7 @@ import {
     Typography
 } from "@material-tailwind/react";
 
-import iconURL from "../assets/music.png";
+import iconURL from "../asset/music.png";
 
 export function SiteHeader(){
 
