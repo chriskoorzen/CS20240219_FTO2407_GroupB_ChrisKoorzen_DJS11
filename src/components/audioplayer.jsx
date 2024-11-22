@@ -117,9 +117,9 @@ function VolumeControl({ audioElement }){
             <MenuHandler>
                 <Button className="flex items-center gap-3">
                     <i className={
-                        volume > 0.35 ? "fas fa-volume-up w-4": 
-                        volume > 0 ? "fas fa-volume-down w-4":
-                        "fas fa-volume-off w-4"
+                        volume > 0.35 ? "fas fa-volume-up w-4 text-left":
+                        volume > 0 ? "fas fa-volume-down w-4 text-left":
+                        "fas fa-volume-off w-4 text-left"
                     }/>
                     Volume
                 </Button>
