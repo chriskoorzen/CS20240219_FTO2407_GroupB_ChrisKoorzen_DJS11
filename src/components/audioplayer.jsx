@@ -16,10 +16,11 @@ import placeholderAudio from "../dev/placeholder-audio.mp3";
 export function AudioPlayer({ audioURL, progress=0 }){
     const audioElement = useRef(null);
     const audioSlider = useRef(null);
-    const [playbackSliderMax, setPlaybackSliderMax] = useState(progress);
+    const [maxPlaybackDuration, setMaxPlaybackDuration] = useState(progress);
+    const [currentPlayback, setCurrentPlayback] = useState(progress);
     const [play, setPlay] = useState(false);
 
-    console.log("reload parent")
+    console.log("reload AudioPlayer")
     useEffect(()=>{
         audioElement.current.fastSeek(progress);
     }, [progress])
@@ -28,6 +29,10 @@ export function AudioPlayer({ audioURL, progress=0 }){
     function audioSliderDrag(event){
         audioElement.current.fastSeek(event.target.value)
         console.log("audioSliderDrag: Now at", event.target.value)
+    };
+
+    function slideRelease(event){
+        console.log("audio slideRelease", event.target.value);
     };
 
     function handlePlayPause(event){
@@ -44,26 +49,23 @@ export function AudioPlayer({ audioURL, progress=0 }){
         setPlay(val=> !val);
     };
 
-    function audioSliderUpdate(event){
+    function audioSliderUpdate(event){      // when playing
         audioSlider.current.value = event.target.currentTime;
+        setCurrentPlayback(audioSlider.current.value);
     };
 
-    function audioMetaDataLoad(event){
+    function audioMetaDataLoad(event){      // when metadata is known
         console.log("Total duration", event.target.duration);
         if (isNaN(event.target.duration) || !isFinite(event.target.duration)){
             throw new Error("Expected a number for duration")
         };
 
-        setPlaybackSliderMax(Math.round(event.target.duration));
-    };
-
-    function slideRelease(event){
-        console.log("audio slideRelease", event.target.value);
+        setMaxPlaybackDuration(Math.round(event.target.duration));
     };
 
     return (
 
-        <div className="flex flex-row items-center px-4 mt-72 h-16 w-full bg-gray-700">
+        <div className="flex flex-row gap-4 items-center px-4 mt-72 h-16 w-full bg-gray-700">
 
             <IconButton onClick={handlePlayPause} >
                 <i className={play ? "fas fa-pause": "fas fa-play"} />
@@ -71,14 +73,19 @@ export function AudioPlayer({ audioURL, progress=0 }){
             
             <input
                 ref={audioSlider}
-                className="mx-5 w-72 h-2 rounded-lg cursor-pointer dark:bg-gray-700"
+                className="w-72 h-2 rounded-lg cursor-pointer dark:bg-gray-700"
                 type="range"
                 defaultValue={progress}
                 min={0}
-                max={playbackSliderMax}
+                max={maxPlaybackDuration}
                 onChange={audioSliderDrag}
                 onMouseUp={slideRelease}
             />
+            <div className="flex">
+                <p>{transformSeconds(currentPlayback)}</p>
+                <p>/</p>
+                <p>{transformSeconds(maxPlaybackDuration)}</p>
+            </div>
 
             <VolumeControl audioElement={audioElement}/>
 
@@ -101,6 +108,7 @@ function VolumeControl({ audioElement }){
     );
     const volumeSlider = useRef(null);
 
+    console.log("reload VolumeControl")
     function volumeSliderDrag(event){
         audioElement.current.volume = event.target.value;
         setVolume(parseFloat(event.target.value));
@@ -141,3 +149,17 @@ function VolumeControl({ audioElement }){
         </Menu>
     )
 }
+
+
+function transformSeconds(seconds){
+    const hours = Math.floor(seconds / 3600);
+    seconds = (seconds - hours*3600);
+
+    const minutes = Math.floor(seconds / 60);
+    seconds = (seconds - minutes*60);
+
+    if (hours){
+        return `${hours}:${minutes > 9 ? minutes: `0${minutes}`}:${seconds > 9 ? seconds: `0${seconds}`}`;
+    };
+    return `${minutes}:${seconds > 9 ? seconds: `0${seconds}`}`;
+};
