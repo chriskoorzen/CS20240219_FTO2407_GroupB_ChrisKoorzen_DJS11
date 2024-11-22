@@ -1,14 +1,14 @@
 import { useRef, useState, useEffect } from "react";
 import { IconButton, slider, Slider } from "@material-tailwind/react";
 
-// import placeholderAudio from "../dev/placeholder-audio.mp3";
-import placeholderAudio from "../dev/pitch.mp3";
+import placeholderAudio from "../dev/placeholder-audio.mp3";
+// import placeholderAudio from "../dev/pitch.mp3";
 
 
 export function AudioPlayer({ audioURL, progress=0 }){
     const audioElement = useRef(null);
-    // const [playbackSliderPosition, setPlaybackSliderPosition] = useState(progress);
-    // const [playbackSliderMax, setPlaybackSliderMax] = useState(1);
+    const audioSlider = useRef(null);
+    const [playbackSliderMax, setPlaybackSliderMax] = useState(1);
     const [play, setPlay] = useState(false);
     // const durationRatio = useRef();
 
@@ -51,18 +51,18 @@ export function AudioPlayer({ audioURL, progress=0 }){
         setPlay(val=> !val);
     };
 
-    // function handlePlaybackUpdate(event){
-    //     setPlaybackSliderPosition(event.target.currentTime);
-    // };
+    function audioSliderUpdate(event){
+        audioSlider.current.value = event.target.currentTime;
+    };
 
-    // function handleLoaded(event){   // When ready to play
-    //     console.log("Total duration", event.target.duration);
-    //     if (isNaN(event.target.duration) || !isFinite(event.target.duration)){
-    //         throw new Error("Expected a number for duration")
-    //     };
+    function handleLoaded(event){   // When ready to play
+        console.log("Total duration", event.target.duration);
+        if (isNaN(event.target.duration) || !isFinite(event.target.duration)){
+            throw new Error("Expected a number for duration")
+        };
 
-    //     setPlaybackSliderMax(Math.round(event.target.duration));
-    // };
+        setPlaybackSliderMax(Math.round(event.target.duration));
+    };
 
     return (
 
@@ -74,23 +74,24 @@ export function AudioPlayer({ audioURL, progress=0 }){
                 <i className={play ? "fas fa-pause": "fas fa-play"} />
             </IconButton>
             
-            {/* <input
-                className="w-72 h-2 rounded-lg cursor-pointer dark:bg-gray-700"
+            <input
+                ref={audioSlider}
+                className="mx-5 w-72 h-2 rounded-lg cursor-pointer dark:bg-gray-700"
                 type="range"
-                value={playbackSliderPosition}
+                defaultValue={progress}
                 min={0}
                 max={playbackSliderMax}
-                onChange={sliderChange}
-                onMouseDown={handleSliderClick}
-                onMouseUp={handleSliderRelease}
-            /> */}
+                // onChange={sliderChange}
+                // onMouseDown={handleSliderClick}
+                // onMouseUp={handleSliderRelease}
+            />
             
 
             <audio 
                 ref={audioElement}
                 src={placeholderAudio}
-                // onCanPlay={handleLoaded}
-                // onTimeUpdate={handlePlaybackUpdate}
+                onCanPlay={handleLoaded}
+                onTimeUpdate={audioSliderUpdate}
             >
 
             </audio>
