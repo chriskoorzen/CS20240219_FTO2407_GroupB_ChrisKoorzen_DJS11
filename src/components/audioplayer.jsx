@@ -14,12 +14,10 @@ import placeholderAudio from "../dev/placeholder-audio.mp3";
 export function AudioPlayer({ audioURL, progress=0 }){
     const audioElement = useRef(null);
     const audioSlider = useRef(null);
-    const volumeSlider = useRef(null);
     const [playbackSliderMax, setPlaybackSliderMax] = useState(progress);
-    const [volume, setVolume] = useState(0.5)
     const [play, setPlay] = useState(false);
 
-    console.log("reload")
+    console.log("reload parent")
     useEffect(()=>{
         audioElement.current.fastSeek(progress);
     }, [progress])
@@ -57,14 +55,8 @@ export function AudioPlayer({ audioURL, progress=0 }){
         setPlaybackSliderMax(Math.round(event.target.duration));
     };
 
-    function volumeSliderDrag(event){
-        audioElement.current.volume = event.target.value;
-        setVolume(parseFloat(event.target.value));
-        console.log("volumeSliderDrag: Now at", event.target.value)
-    };
-
     function slideRelease(event){
-        console.log("slideRelease", event.target.value);
+        console.log("audio slideRelease", event.target.value);
     };
 
     return (
@@ -86,32 +78,7 @@ export function AudioPlayer({ audioURL, progress=0 }){
                 onMouseUp={slideRelease}
             />
 
-            <Menu placement="top" allowHover={true}>
-                <MenuHandler>
-                    <Button className="flex items-center gap-3">
-                        <i className={
-                            volume > 0.35 ? "fas fa-volume-up w-4": 
-                            volume > 0 ? "fas fa-volume-down w-4":
-                            "fas fa-volume-off w-4"
-                        }/>
-                        Volume
-                    </Button>
-                </MenuHandler>
-                <MenuList className="h-fit min-w-fit">
-                        <input
-                            ref={volumeSlider}
-                            className="h-28"
-                            orient="vertical"
-                            type="range"
-                            defaultValue={volume}
-                            min={0}
-                            max={1}
-                            step={0.05}
-                            onChange={volumeSliderDrag}
-                            onMouseUp={slideRelease}
-                        />
-                </MenuList>
-            </Menu>
+            <VolumeControl audioElement={audioElement}/>
 
             <audio
                 ref={audioElement}
@@ -123,3 +90,48 @@ export function AudioPlayer({ audioURL, progress=0 }){
         </div>
     );
 };
+
+
+function VolumeControl({audioElement}){
+    const [volume, setVolume] = useState(0.5);
+    const volumeSlider = useRef(null);
+
+    function volumeSliderDrag(event){
+        audioElement.current.volume = event.target.value;
+        setVolume(parseFloat(event.target.value));
+        console.log("volumeSliderDrag: Now at", event.target.value)
+    };
+
+    function slideRelease(event){
+        console.log("volume slideRelease", event.target.value);
+    };
+
+    return (
+        <Menu placement="top" allowHover={true}>
+            <MenuHandler>
+                <Button className="flex items-center gap-3">
+                    <i className={
+                        volume > 0.35 ? "fas fa-volume-up w-4": 
+                        volume > 0 ? "fas fa-volume-down w-4":
+                        "fas fa-volume-off w-4"
+                    }/>
+                    Volume
+                </Button>
+            </MenuHandler>
+            <MenuList className="h-fit min-w-fit">
+                    <input
+                        ref={volumeSlider}
+                        className="h-28"
+                        orient="vertical"
+                        type="range"
+                        defaultValue={volume}
+                        min={0}
+                        max={1}
+                        step={0.05}
+                        onChange={volumeSliderDrag}
+                        onMouseUp={slideRelease}
+                    />
+            </MenuList>
+        </Menu>
+    )
+}
