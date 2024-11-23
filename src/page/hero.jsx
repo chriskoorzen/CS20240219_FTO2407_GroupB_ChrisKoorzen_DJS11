@@ -1,4 +1,4 @@
-import { Suspense, useRef, useState } from "react";
+import { Suspense, useRef, useState, useEffect } from "react";
 import { Await } from "react-router-dom";
 import { useRouteLoaderData, useAsyncValue } from "react-router";
 
@@ -25,8 +25,11 @@ export function LandingPage(){
 function ImageSlider({ activeCallback }) {
     const data = useAsyncValue();
     const container = useRef(null);
+    const index = useRef({max: data.length, current: 0});
 
-    const index = useRef({max: data.length, current: 0})
+    useEffect(() => {
+        activeCallback(data[index.current.current].image)
+    });
 
     function scrollRight(){
         index.current.current += 1;
@@ -69,7 +72,8 @@ function ImageSlider({ activeCallback }) {
                 ref={container}
                 className="flex gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth"
             >
-                { data.map((el, index) => (
+                { data.sort((a, b)=>{ return a.title > b.title })
+                .map((el, index) => (
                     <div key={index} className="snap-center snap-always shrink-0 first:pl-40 last:pr-40">
                         <img
                             className="size-40 object-cover"
@@ -80,5 +84,5 @@ function ImageSlider({ activeCallback }) {
                 ))}
             </div>
         </div>
-    )
-}
+    );
+};
