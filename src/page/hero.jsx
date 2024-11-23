@@ -2,10 +2,12 @@ import { Suspense, useRef, useState, useEffect } from "react";
 import { Await } from "react-router-dom";
 import { useRouteLoaderData, useAsyncValue } from "react-router";
 
+import { FullShowPreview } from "../component/infoCard";
+
 
 export function LandingPage(){
     const { previews } = useRouteLoaderData("root");
-    const [focusItem, setFocusItem] = useState("");
+    const [focusItem, setFocusItem] = useState(null);
 
     return (
         <div className="grow rounded-lg bg-gray-800 my-3 mr-3 p-4 flex flex-col justify-between items-center">
@@ -14,7 +16,7 @@ export function LandingPage(){
             </h1>
             <Suspense fallback={<h1 className="text-2xl font-bold p-4 text-center">Loading blog posts...</h1>}>
                 <Await resolve={previews}>
-                    <img src={focusItem} className="size-96"/>
+                    <FullShowPreview show={focusItem} />
                     <ImageSlider activeCallback={setFocusItem}/>
                 </Await>
             </Suspense>
@@ -28,7 +30,7 @@ function ImageSlider({ activeCallback }) {
     const index = useRef({max: data.length, current: 0});
 
     useEffect(() => {
-        activeCallback(data[index.current.current].image)
+        activeCallback(data[index.current.current])
     });
 
     function scrollRight(){
@@ -39,7 +41,7 @@ function ImageSlider({ activeCallback }) {
 
         const activeItem = container.current.children.item(index.current.current);
         activeItem.scrollIntoView();
-        activeCallback(data[index.current.current].image);
+        activeCallback(data[index.current.current]);
     };
 
     function scrollLeft(){
@@ -50,7 +52,7 @@ function ImageSlider({ activeCallback }) {
         
         const activeItem = container.current.children.item(index.current.current);
         activeItem.scrollIntoView();
-        activeCallback(data[index.current.current].image);
+        activeCallback(data[index.current.current]);
     };
 
 
