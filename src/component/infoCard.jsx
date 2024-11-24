@@ -1,6 +1,8 @@
-import { showGenres } from "../api/server";
+import { AsyncImage } from "./asyncImage";
 
 import { sanitizeHtmlLiterals } from "../utils/strings";
+
+import { showGenres } from "../api/server";
 
 
 export function FullShowPreview({ show }){
@@ -15,7 +17,7 @@ export function FullShowPreview({ show }){
         <div 
             className="rounded-lg bg-gray-900 p-3 flex gap-5 text-white cursor-pointer"
         >
-            <img src={show.image} className="size-96 rounded-lg"/>
+            <AsyncImage imgUrl={show.image} className="size-96 rounded-lg shrink-0"/>
             <div>
                 <h6 className="text-2xl font-bold mb-4">{sanitizeHtmlLiterals(show.title)}</h6>
                 <div className="flex justify-between">

@@ -3,6 +3,7 @@ import { Await } from "react-router-dom";
 import { useRouteLoaderData, useAsyncValue } from "react-router";
 
 import { FullShowPreview } from "../component/infoCard";
+import { AsyncImage } from "../component/asyncImage";
 
 
 export function LandingPage(){
@@ -10,7 +11,7 @@ export function LandingPage(){
     const [focusItem, setFocusItem] = useState(null);
 
     return (
-        <div className="grow rounded-lg bg-gray-800 my-3 mr-3 p-4 flex flex-col justify-between items-center">
+        <div className="size-full flex flex-col justify-between items-center">
             <h1 className="text-white text-3xl font-bold text-center">
                 Discover the best shows from around the world
             </h1>
@@ -77,9 +78,9 @@ function ImageSlider({ activeCallback }) {
                 { data.sort((a, b)=>{ return a.title > b.title })
                 .map((el, index) => (
                     <div key={index} className="snap-center snap-always shrink-0 first:pl-40 last:pr-40">
-                        <img
-                            className="size-40 object-cover"
-                            src={el.image}
+                        <AsyncImage
+                            className="size-40"
+                            imgUrl={el.image}
                             alt={`image ${index}`}
                         />
                     </div>
