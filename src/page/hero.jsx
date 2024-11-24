@@ -31,7 +31,7 @@ function ImageSlider({ activeCallback }) {
     const index = useRef({max: data.length, current: 0});
 
     useEffect(() => {
-        activeCallback(data[index.current.current])
+        activeCallback(data[index.current.current]);
     });
 
     function scrollRight(){
@@ -56,6 +56,14 @@ function ImageSlider({ activeCallback }) {
         activeCallback(data[index.current.current]);
     };
 
+    function clickSelect(event){
+        const pos = Array.from(container.current.children).indexOf(event.currentTarget);
+
+        index.current.current = pos;
+        event.currentTarget.scrollIntoView();
+        activeCallback(data[pos]);
+    };
+
 
     return (
         <div className="relative w-[800px] h-fit py-4 px-12">
@@ -77,7 +85,11 @@ function ImageSlider({ activeCallback }) {
             >
                 { data.sort((a, b)=>{ return a.title > b.title })
                 .map((el, index) => (
-                    <div key={index} className="snap-center snap-always shrink-0 first:pl-40 last:pr-40">
+                    <div
+                        key={index}
+                        className="snap-center snap-always shrink-0 first:pl-40 last:pr-40"
+                        onClick={clickSelect}
+                    >
                         <AsyncImage
                             className="size-40"
                             imgUrl={el.image}
