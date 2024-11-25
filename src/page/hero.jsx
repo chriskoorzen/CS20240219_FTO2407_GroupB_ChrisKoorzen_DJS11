@@ -1,103 +1,85 @@
-import { Suspense, useRef, useState, useEffect } from "react";
-import { Await } from "react-router-dom";
-import { useRouteLoaderData, useAsyncValue } from "react-router";
+import { Suspense, useRef, useState } from "react";
+import { Await, Link } from "react-router-dom";
+import { useRouteLoaderData } from "react-router";
+
+import { Dialog } from "@material-tailwind/react";
 
 import { FullShowPreview } from "../component/infoCard";
-import { AsyncImage } from "../component/asyncImage";
+import { ImageSlider } from "../component/basic";
 
 
 export function LandingPage(){
     const { previews } = useRouteLoaderData("root");
+    const [open, setOpen] = useState(false);
     const [focusItem, setFocusItem] = useState(null);
+    
+    function selectItemForDisplay(item){
+        setFocusItem(item);
+        setOpen(true);
+    };
 
     return (
-        <div className="size-full flex flex-col justify-between items-center">
+        <div className="w-full overflow-y-auto "> {/** flex flex-col justify-between items-center */}
             <h1 className="text-white text-3xl font-bold text-center">
                 Discover the best shows from around the world
             </h1>
             <Suspense fallback={<h1 className="text-2xl font-bold p-4 text-center">Loading blog posts...</h1>}>
-                <Await resolve={previews}>
-                    <FullShowPreview show={focusItem} />
-                    <ImageSlider activeCallback={setFocusItem}/>
+                <Await 
+                    resolve={previews} 
+                    children={previews => {
+                        return (
+                            <>
+                                <Dialog open={open} handler={()=>{setOpen(false)}}>
+                                    <FullShowPreview show={focusItem}/>
+                                </Dialog>
+                                
+                                <div className="my-8">
+                                    <h1 className="text-lg text-white">Recommended for You</h1>
+                                    <ImageSlider
+                                        showArray={previews}
+                                        activeCallback={selectItemForDisplay}
+                                    />
+                                </div>
+
+                                <Link
+                                    to="/browse"
+                                    className="text-lg text-white"
+                                >
+                                    Browse All Titles <i className="fas fa-arrow-right" />
+                                </Link>
+                                <ImageSlider
+                                    showArray={previews.toSorted((a, b) => a.title > b.title)}
+                                    activeCallback={selectItemForDisplay}
+                                />
+
+                                <Link
+                                    to="/browse"
+                                    className="text-lg text-white"
+                                >
+                                    Browse Genres <i className="fas fa-arrow-right" />
+                                </Link>
+                                <ImageSlider
+                                    showArray={previews}
+                                    activeCallback={selectItemForDisplay}
+                                />
+
+                                {/**If logged in, show "Your favorites", and "Watch Again" */}
+
+                                <Link
+                                    to="/browse"
+                                    className="text-lg text-white"
+                                >
+                                    Favourites <i className="fas fa-arrow-right" />
+                                </Link>
+                                <ImageSlider
+                                    showArray={previews}
+                                    activeCallback={selectItemForDisplay}
+                                />
+                            </>
+                        );
+                    }}>
                 </Await>
             </Suspense>
-        </div>
-    );
-};
-
-function ImageSlider({ activeCallback }) {
-    const data = useAsyncValue();
-    const container = useRef(null);
-    const index = useRef({max: data.length, current: 0});
-
-    useEffect(() => {
-        activeCallback(data[index.current.current]);
-    });
-
-    function scrollRight(){
-        index.current.current += 1;
-        if (index.current.current >= index.current.max){
-            index.current.current = 0;
-        };
-
-        const activeItem = container.current.children.item(index.current.current);
-        activeItem.scrollIntoView();
-        activeCallback(data[index.current.current]);
-    };
-
-    function scrollLeft(){
-        index.current.current -= 1;
-        if (index.current.current <= 0){
-            index.current.current = index.current.max-1;
-        };
-        
-        const activeItem = container.current.children.item(index.current.current);
-        activeItem.scrollIntoView();
-        activeCallback(data[index.current.current]);
-    };
-
-    function clickSelect(event){
-        const pos = Array.from(container.current.children).indexOf(event.currentTarget);
-
-        index.current.current = pos;
-        event.currentTarget.scrollIntoView();
-        activeCallback(data[pos]);
-    };
-
-
-    return (
-        <div className="relative w-[800px] h-fit py-4 px-12">
-            <button
-                className="rounded-full size-10 bg-gray-300/40 hover:bg-gray-300 absolute top-1/2 -translate-y-5 left-0"
-                onClick={scrollLeft}
-            >
-                <i className="fas fa-chevron-left size-3" />
-            </button>
-            <button
-                className="rounded-full size-10 bg-gray-300/40 hover:bg-gray-300 absolute top-1/2 -translate-y-5 right-0"
-                onClick={scrollRight}
-            >
-                <i className="fas fa-chevron-right size-3" />
-            </button>
-            <div
-                ref={container}
-                className="flex gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth"
-            >
-                { data.sort((a, b)=>{ return a.title > b.title })
-                .map((el, index) => (
-                    <div
-                        key={index}
-                        className="snap-center snap-always shrink-0 first:pl-40 last:pr-40"
-                        onClick={clickSelect}
-                    >
-                        <AsyncImage
-                            className="size-40"
-                            imgUrl={el.image}
-                            alt={`image ${index}`}
-                        />
-                    </div>
-                ))}
-            </div>
         </div>
     );
 };
