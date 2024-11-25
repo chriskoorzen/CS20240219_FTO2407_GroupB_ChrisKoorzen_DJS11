@@ -104,16 +104,16 @@ export function BrowsePage(){
 
                             switch (sortOption){
                                 case "A-Z":
-                                    previews.sort((a, b)=> a.title > b.title);
+                                    previews = previews.toSorted((a, b)=> a.title > b.title);
                                     break;
                                 case "Z-A":
-                                    previews.sort((a, b)=> a.title < b.title);
+                                    previews = previews.toSorted((a, b)=> a.title < b.title);
                                     break;
                                 case "Latest":
-                                    previews.sort((a, b)=> new Date(a.updated) < new Date(b.updated));
+                                    previews = previews.toSorted((a, b)=> new Date(a.updated) < new Date(b.updated));
                                     break;
                                 case "Oldest":
-                                    previews.sort((a, b)=> new Date(a.updated) > new Date(b.updated));
+                                    previews = previews.toSorted((a, b)=> new Date(a.updated) > new Date(b.updated));
                                     break;
                             };
 
