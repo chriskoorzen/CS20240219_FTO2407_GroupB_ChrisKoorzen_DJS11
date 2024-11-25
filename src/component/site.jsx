@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 import {
     Navbar,
     Input,
@@ -17,7 +19,7 @@ export function SiteHeader(){
             fullWidth={true}
         >
             <div className="flex flex-wrap items-center justify-between gap-y-4 text-white">
-                <div className="flex items-center cursor-pointer ">
+                <Link to="/" className="flex items-center cursor-pointer ">
                     <img
                         className="size-12 bg-purple-500 rounded-xl p-1"
                         src={iconURL}
@@ -28,7 +30,7 @@ export function SiteHeader(){
                     >
                         QCast
                     </Typography>
-                </div>
+                </Link>
                 <div className="relative flex w-full gap-2 md:w-max">
                     <Input
                         type="search"
