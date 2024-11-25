@@ -11,8 +11,7 @@ import { showGenres } from "../api/server";
 
 export function BrowsePage(){
     const { previews } = useRouteLoaderData("root");
-    const [searchParams, setSearchParams] = useSearchParams();
-    const [textSearch, setTextSearch] = useState("");
+    const [searchParams, setSearchParams] = useSearchParams({"title": ""});
     const [sortOption, setSortOption] = useState("A-Z");       // "A-Z", "Z-A", "Latest", "Oldest"
 
     function toggleSearchParams(key, value){
@@ -35,14 +34,14 @@ export function BrowsePage(){
                     label="Search Titles..."
                     className="pr-20"
                     containerProps={{ className: "min-w-72" }}
-                    value={textSearch}
-                    onChange={(event)=>{setTextSearch(event.target.value)}}
+                    value={searchParams.get("title")}
+                    onChange={(event)=>{searchParams.set("title", event.target.value); setSearchParams(searchParams);}}
                 />
                 <Button
                     size="sm"
                     color="white"
                     className="!absolute right-1 top-1 rounded"
-                    onClick={()=>{setTextSearch("")}}
+                    onClick={()=>{searchParams.delete("title"); setSearchParams(searchParams);}}
                 >
                     Clear
                 </Button>
@@ -88,10 +87,10 @@ export function BrowsePage(){
                     <Await
                         resolve={previews}
                         children={previews => {
-                            previews = previews.filter(preview => preview["title"].toLowerCase().includes(textSearch.toLowerCase()));
+                            previews = previews.filter(preview => preview.title.toLowerCase().includes(searchParams.get("title").toLowerCase()));
 
                             searchParams.getAll("genre").forEach(genre => {
-                                previews = previews.filter(preview => preview["genres"].includes(parseInt(genre)));
+                                previews = previews.filter(preview => preview.genres.includes(parseInt(genre)));
                             });
 
                             switch (sortOption){
