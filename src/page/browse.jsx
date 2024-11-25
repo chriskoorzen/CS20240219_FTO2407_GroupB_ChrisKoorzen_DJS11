@@ -11,8 +11,9 @@ import { showGenres } from "../api/server";
 
 export function BrowsePage(){
     const { previews } = useRouteLoaderData("root");
-    const [searchParams, setSearchParams] = useSearchParams({"title": ""});
+    const [searchParams, setSearchParams] = useSearchParams();
     const [sortOption, setSortOption] = useState("A-Z");       // "A-Z", "Z-A", "Latest", "Oldest"
+
 
     function toggleSearchParams(key, value){
         const exists = searchParams.has(key, value);
@@ -23,6 +24,12 @@ export function BrowsePage(){
         setSearchParams(searchParams);
     };
 
+    function handleTitleSearchInput(event){
+        if (event.target.value==="") searchParams.delete("title");
+        else searchParams.set("title", event.target.value);
+
+        setSearchParams(searchParams);
+    };
 
     return (
         <div className="size-full flex flex-col justify-start items-center">
@@ -34,8 +41,8 @@ export function BrowsePage(){
                     label="Search Titles..."
                     className="pr-20"
                     containerProps={{ className: "min-w-72" }}
-                    value={searchParams.get("title")}
-                    onChange={(event)=>{searchParams.set("title", event.target.value); setSearchParams(searchParams);}}
+                    value={searchParams.has("title") ? searchParams.get("title") : ""}
+                    onChange={handleTitleSearchInput}
                 />
                 <Button
                     size="sm"
@@ -87,7 +94,9 @@ export function BrowsePage(){
                     <Await
                         resolve={previews}
                         children={previews => {
-                            previews = previews.filter(preview => preview.title.toLowerCase().includes(searchParams.get("title").toLowerCase()));
+                            if (searchParams.has("title")){
+                                previews = previews.filter(preview => preview.title.toLowerCase().includes(searchParams.get("title").toLowerCase()));
+                            };
 
                             searchParams.getAll("genre").forEach(genre => {
                                 previews = previews.filter(preview => preview.genres.includes(parseInt(genre)));
