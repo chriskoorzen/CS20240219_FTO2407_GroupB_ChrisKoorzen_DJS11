@@ -1,13 +1,13 @@
-import { AsyncImage } from "./asyncImage";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+
+import { AsyncImage, ImageSlider } from "./basic";
 
 import { sanitizeHtmlLiterals } from "../utils/strings";
-
 import { showGenres } from "../api/server";
 
 
 export function FullShowPreview({ show }){
-
-    // console.log("FullShowPreview", show)
 
     if (show === null){
         return <h1>Placeholder</h1>
@@ -81,3 +81,41 @@ export function FullShowHeader({ show }){
     );
 };
 
+
+export function SeasonSelector({ show }){
+    const [activeSeason, setActiveSeason] = useState(show.seasons[0]);
+    
+    console.log("Season Selector", show)
+    console.log("Active Season", activeSeason)
+
+
+    return (
+        <div>
+            <h1>Seasons</h1>
+            <ImageSlider
+                showArray={
+                    show.seasons.sort((a, b)=> a.season > b.season)
+                }
+                activeCallback={setActiveSeason}
+            />
+            <EpisodeView episodes={activeSeason.episodes}/>
+        </div>
+    );
+};
+
+
+function EpisodeView({ episodes }){
+
+    return (
+        <div className="w-full flex flex-row flex-wrap">
+            {
+                episodes.map(ep => (
+                    <div className="bg-gray-100 p-2 my-2 rounded">
+                        <p>Episode {ep.episode}</p>
+                        <p>{ep.description}</p>
+                    </div>
+                ))
+            }
+        </div>
+    );
+};
