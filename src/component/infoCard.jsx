@@ -32,6 +32,50 @@ export function FullShowPreview({ show }){
                     }
                 </div>
                 <p className="line-clamp-6">{show.description}</p>
+                <div className="mt-5 flex justify-evenly">
+                    <Link
+                        to={`/show/${show.id}`}
+                        className="rounded-full p-3 bg-gray-200 text-black"
+                    >
+                        Read More..
+                    </Link>
+                    <button className="rounded-full bg-green-400 p-3">Play Now</button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+
+export function FullShowHeader({ show }){
+
+    return (
+        <div className="text-white flex flex-col gap-5">
+            <div className="flex flex-row ">
+                <div className="w-48 shrink-0">
+                    <AsyncImage
+                        imgUrl={show.image}
+                        className="size-48 rounded-lg border-2"
+                    />
+                    <div className="my-3 flex justify-evenly">
+                        {
+                            show.genres.map(genreID => {
+                                return <p key={genreID} className="bg-purple-500 rounded-full p-2">{showGenres[genreID]}</p>
+                            })
+                        }
+                    </div>
+                </div>
+                <div className="grow flex flex-col px-5">
+                    {/* <h6 className="text-center text-5xl font-bold mb-4">{sanitizeHtmlLiterals(show.title)}</h6>
+                    <div className="my-3 flex justify-evenly">
+                        {
+                            show.genres.map(genreID => {
+                                return <p key={genreID} className="bg-purple-500 rounded-full p-2">{showGenres[genreID]}</p>
+                            })
+                        }
+                    </div> */}
+                    <p className="max-h-60 overflow-y-auto p-4 rounded-lg bg-gray-900">{show.description}</p>
+                </div>
             </div>
         </div>
     );
