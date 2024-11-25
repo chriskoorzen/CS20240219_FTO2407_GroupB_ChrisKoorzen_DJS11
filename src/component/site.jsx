@@ -33,10 +33,10 @@ export function SiteHeader(){
                     <Input
                         type="search"
                         color="white"
-                        label="Find the world's best..."
+                        label="Search Titles..."
                         className="pr-20"
                         containerProps={{
-                        className: "min-w-[288px]",
+                        className: "min-w-72",
                         }}
                     />
                     <Button
