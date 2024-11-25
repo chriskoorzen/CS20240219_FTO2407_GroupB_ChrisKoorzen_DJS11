@@ -10,7 +10,7 @@ import { loadInitialData } from "./api/server";
 
 export const App = createBrowserRouter(
     createRoutesFromElements(
-        <Route path="/" element={<MainLayout />} id="root" loader={loadInitialData}>
+        <Route path="/" element={<MainLayout />} id="root" loader={loadInitialData} shouldRevalidate={() => false}>
             <Route index element={<LandingPage />} />
             <Route path="browse/" element={<BrowsePage />} />
             <Route path="show/:showid/" element={<FullShowPage />}>
