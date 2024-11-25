@@ -2,6 +2,8 @@ import { Suspense, useRef, useState, useEffect } from "react";
 import { Await, useSearchParams } from "react-router-dom";
 import { useRouteLoaderData, useAsyncValue } from "react-router";
 
+import { Input, Button } from "@material-tailwind/react";
+
 import { FullShowPreview } from "../component/infoCard";
 import { AsyncImage } from "../component/basic";
 
@@ -10,6 +12,8 @@ import { showGenres } from "../api/server";
 export function BrowsePage(){
     const { previews } = useRouteLoaderData("root");
     const [searchParams, setSearchParams] = useSearchParams();
+    const [textSearch, setTextSearch] = useState("");
+    console.log(textSearch)
 
     function toggleSearchParams(key, value){
         const exists = searchParams.has(key, value);
@@ -20,12 +24,29 @@ export function BrowsePage(){
         setSearchParams(searchParams);
     };
 
+
     return (
         <div className="size-full flex flex-col justify-start items-center">
-            
-            <h1 className="text-white text-3xl font-bold text-center">
-                Search functionality here
-            </h1>
+
+            <div className="relative flex gap-2 w-96">
+                <Input
+                    type="search"
+                    color="white"
+                    label="Search Titles..."
+                    className="pr-20"
+                    containerProps={{ className: "min-w-72" }}
+                    value={textSearch}
+                    onChange={(event)=>{setTextSearch(event.target.value)}}
+                />
+                <Button
+                    size="sm"
+                    color="white"
+                    className="!absolute right-1 top-1 rounded"
+                    onClick={()=>{setTextSearch("")}}
+                >
+                    Clear
+                </Button>
+            </div>
             <div className="flex flex-row gap-2 flex-wrap">
                 {Object.entries(showGenres).map(([id, genre]) =>
                     <button
@@ -45,9 +66,11 @@ export function BrowsePage(){
                     <Await
                         resolve={previews}
                         children={previews => {
+                            previews = previews.filter(preview => preview["title"].toLowerCase().includes(textSearch.toLowerCase()));
+
                             searchParams.getAll("genre").forEach(genre => {
                                 previews = previews.filter(preview => preview["genres"].includes(parseInt(genre)));
-                            })
+                            });
 
                             return previews.map((el, index) => 
                                 <AsyncImage key={index} imgUrl={el.image} className={"size-40 rounded-lg"}/>
