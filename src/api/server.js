@@ -9,7 +9,7 @@ export async function getPreviews(){
 
             else throw new Error(`Failed to fetch Previews.\nServer code ${response.status}.`);
         }
-    ).then(                 // Index show previews by id
+    ).then( // Index show previews by id
         dataArray => {
             const dataObject = {};
 
@@ -58,3 +58,22 @@ export const showGenres = {
     8: "News",
     9: "Kids and Family",
 };
+
+
+export async function loadInitialData() {
+    return {
+        previews: getPreviews(),
+        genres: {
+            1: getGenre(1),
+            2: getGenre(2),
+            3: getGenre(3),
+            4: getGenre(4),
+            5: getGenre(5),
+            6: getGenre(6),
+            7: getGenre(7),
+            8: getGenre(8),
+            9: getGenre(9),
+        },
+        shows: {}
+    };
+}
