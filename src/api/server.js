@@ -9,16 +9,6 @@ export async function getPreviews(){
 
             else throw new Error(`Failed to fetch Previews.\nServer code ${response.status}.`);
         }
-    ).then( // Index show previews by id
-        dataArray => {
-            const dataObject = {};
-
-            dataArray.forEach(element => {
-                dataObject[element.id] = element
-            });
-
-            return dataObject;
-        }
     );
 };
 
