@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 
 import {
     Navbar,
-    Input,
     Button,
     Typography
 } from "@material-tailwind/react";
@@ -31,24 +30,7 @@ export function SiteHeader(){
                         QCast
                     </Typography>
                 </Link>
-                <div className="relative flex w-full gap-2 md:w-max">
-                    <Input
-                        type="search"
-                        color="white"
-                        label="Search Titles..."
-                        className="pr-20"
-                        containerProps={{
-                        className: "min-w-72",
-                        }}
-                    />
-                    <Button
-                        size="sm"
-                        color="white"
-                        className="!absolute right-1 top-1 rounded"
-                    >
-                        Search
-                    </Button>
-                </div>
+
                 <div className="flex gap-2">
                     <Button>Sign Up</Button>
                     <Button>Log In</Button>
