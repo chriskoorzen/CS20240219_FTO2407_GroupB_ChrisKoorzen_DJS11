@@ -35,6 +35,16 @@ export function AsyncImage({ imgUrl, className, alt }){
 export function ImageSlider({ setActiveIndexCallback, children }) {
     const container = useRef(null);
     const index = useRef(0);
+    const [isOverflowing, setIsOverflowing] = useState(false);
+
+    useEffect(()=>{
+        setTimeout(()=>{
+            // Workaround, because on immediate mount scrollWidth always === clientWidth
+            const overflow = container.current.scrollWidth > container.current.clientWidth;
+            setIsOverflowing(overflow);
+        }, 300);
+        
+    });
 
     function scrollRight(){
         index.current += 1;
@@ -69,19 +79,21 @@ export function ImageSlider({ setActiveIndexCallback, children }) {
 
 
     return (
-        <div className="relative w-full h-fit py-4 px-12">
-            <button
-                className="rounded-full size-10 bg-gray-300/40 hover:bg-gray-300 absolute top-1/2 -translate-y-5 left-0"
-                onClick={scrollLeft}
-            >
-                <i className="fas fa-chevron-left size-3" />
-            </button>
-            <button
-                className="rounded-full size-10 bg-gray-300/40 hover:bg-gray-300 absolute top-1/2 -translate-y-5 right-0"
-                onClick={scrollRight}
-            >
-                <i className="fas fa-chevron-right size-3" />
-            </button>
+        <div className="relative h-fit py-4 px-12">
+            {isOverflowing ? (<>
+                <button
+                    className="rounded-full size-10 bg-gray-300/40 hover:bg-gray-300 absolute top-1/2 -translate-y-5 left-0"
+                    onClick={scrollLeft}
+                >
+                    <i className="fas fa-chevron-left size-3" />
+                </button>
+                <button
+                    className="rounded-full size-10 bg-gray-300/40 hover:bg-gray-300 absolute top-1/2 -translate-y-5 right-0"
+                    onClick={scrollRight}
+                >
+                    <i className="fas fa-chevron-right size-3" />
+                </button>
+            </>) : null}
             <div
                 ref={container}
                 className="flex gap-6 overflow-x-auto snap-x snap-mandatory"
