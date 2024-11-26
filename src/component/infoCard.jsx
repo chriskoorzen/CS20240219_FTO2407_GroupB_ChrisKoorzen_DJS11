@@ -84,20 +84,21 @@ export function FullShowHeader({ show }){
 
 export function SeasonSelector({ show }){
     const [activeSeason, setActiveSeason] = useState(show.seasons[0]);
-    
-    console.log("Season Selector", show)
-    console.log("Active Season", activeSeason)
+    const sortedSeasons = show.seasons.sort((a, b)=> a.season > b.season);
+    console.log("Season Selector")
 
+    function selectSeason(pos){
+        setActiveSeason(sortedSeasons[pos]);
+    };
 
     return (
         <div>
             <h1>Seasons</h1>
-            <ImageSlider
-                showArray={
-                    show.seasons.sort((a, b)=> a.season > b.season)
-                }
-                activeCallback={setActiveSeason}
-            />
+            <ImageSlider setActiveIndexCallback={selectSeason}>
+                {sortedSeasons.map(el => (
+                    <AsyncImage imgUrl={el.image} className="size-40 rounded-lg"/>
+                ))}
+            </ImageSlider>
             <EpisodeView episodes={activeSeason.episodes}/>
         </div>
     );
@@ -109,8 +110,8 @@ function EpisodeView({ episodes }){
     return (
         <div className="w-full flex flex-row flex-wrap">
             {
-                episodes.map(ep => (
-                    <div className="bg-gray-100 p-2 my-2 rounded">
+                episodes.map((ep, index) => (
+                    <div key={index} className="bg-gray-100 p-2 my-2 rounded">
                         <p>Episode {ep.episode}</p>
                         <p>{ep.description}</p>
                     </div>
