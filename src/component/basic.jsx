@@ -32,13 +32,13 @@ export function AsyncImage({ imgUrl, className, alt }){
 };
 
 
-export function ImageSlider({ showArray, activeCallback }) {
+export function ImageSlider({ setActiveIndexCallback, children }) {
     const container = useRef(null);
     const index = useRef({ current: 0 });
 
     function scrollRight(){
         index.current.current += 1;
-        if (index.current.current >= showArray.length){
+        if (index.current.current >= children.length){
             index.current.current = 0;
         };
 
@@ -48,8 +48,8 @@ export function ImageSlider({ showArray, activeCallback }) {
 
     function scrollLeft(){
         index.current.current -= 1;
-        if (index.current.current <= 0){
-            index.current.current = showArray.length-1;
+        if (index.current.current < 0){
+            index.current.current = children.length-1;
         };
         
         const activeItem = container.current.children.item(index.current.current);
@@ -62,7 +62,9 @@ export function ImageSlider({ showArray, activeCallback }) {
 
         index.current.current = pos;
         event.currentTarget.scrollIntoView();
-        activeCallback(showArray[pos]);
+        if (setActiveIndexCallback){
+            setActiveIndexCallback(pos);
+        };
     };
 
 
@@ -84,17 +86,13 @@ export function ImageSlider({ showArray, activeCallback }) {
                 ref={container}
                 className="flex gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth"
             >
-                { showArray.map((el, index) => (
+                { children.map((child, index) => (
                     <div
                         key={index}
                         className="snap-center snap-always shrink-0 first:pl-10 last:pr-10"
                         onClick={clickSelect}
                     >
-                        <AsyncImage
-                            className="size-40 rounded-lg"
-                            imgUrl={el.image}
-                            alt={`image ${index}`}
-                        />
+                        {child}
                     </div>
                 ))}
             </div>
