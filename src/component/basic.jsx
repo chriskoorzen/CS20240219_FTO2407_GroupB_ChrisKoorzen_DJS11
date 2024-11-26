@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, Children, useEffect } from "react";
 
 
 export function AsyncImage({ imgUrl, className, alt }){
@@ -34,34 +34,34 @@ export function AsyncImage({ imgUrl, className, alt }){
 
 export function ImageSlider({ setActiveIndexCallback, children }) {
     const container = useRef(null);
-    const index = useRef({ current: 0 });
+    const index = useRef(0);
 
     function scrollRight(){
-        index.current.current += 1;
-        if (index.current.current >= children.length){
-            index.current.current = 0;
+        index.current += 1;
+        if (index.current >= children.length){
+            index.current = 0;
         };
 
-        const activeItem = container.current.children.item(index.current.current);
-        activeItem.scrollIntoView();
+        const activeItem = container.current.children.item(index.current);
+        activeItem.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
     };
 
     function scrollLeft(){
-        index.current.current -= 1;
-        if (index.current.current < 0){
-            index.current.current = children.length-1;
+        index.current -= 1;
+        if (index.current < 0){
+            index.current = children.length-1;
         };
         
-        const activeItem = container.current.children.item(index.current.current);
-        activeItem.scrollIntoView();
+        const activeItem = container.current.children.item(index.current);
+        activeItem.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
     };
 
     function clickSelect(event){
         event.stopPropagation();
         const pos = Array.from(container.current.children).indexOf(event.currentTarget);
 
-        index.current.current = pos;
-        event.currentTarget.scrollIntoView();
+        index.current = pos;
+        event.currentTarget.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         if (setActiveIndexCallback){
             setActiveIndexCallback(pos);
         };
@@ -84,12 +84,12 @@ export function ImageSlider({ setActiveIndexCallback, children }) {
             </button>
             <div
                 ref={container}
-                className="flex gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth"
+                className="flex gap-6 overflow-x-auto snap-x snap-mandatory"
             >
-                { children.map((child, index) => (
+                { Children.map(children, (child, index) => (
                     <div
                         key={index}
-                        className="snap-center snap-always shrink-0 first:pl-10 last:pr-10"
+                        className="snap-center snap-always shrink-0 first:ml-10 last:mr-10"
                         onClick={clickSelect}
                     >
                         {child}
