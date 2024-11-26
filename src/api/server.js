@@ -63,8 +63,15 @@ export const genreStockImages = [
 
 
 export async function loadInitialData() {
+    const previews = getPreviews();
     return {
-        previews: getPreviews(),
+        previews: previews,
+        previewsByIndex: previews.then(
+            previews => previews.reduce(((obj, show) => {
+                obj[show.id] = show;
+                return obj;
+            }), {})
+        ),
         genres: {
             1: getGenre(1),
             2: getGenre(2),
