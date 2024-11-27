@@ -150,17 +150,22 @@ export function clearFavorites(){
 // Settings
 const settingsKey = "settings";
 
-export function updateSettings(key, value){
-    const settings = getStorageObject(settingsKey);
+export const settings = {
+    update: (key, value) => {
+        let settings = JSON.parse(localStorage.getItem(settingsKey));
 
-    settings[key] = value;
+        if (settings === null) settings = new Object();
 
-    updateStorage(settingsKey, settings);
+        settings[key] = value;
 
-};
+        localStorage.setItem(settingsKey, JSON.stringify(settings));
+    },
 
-export function getSettings(key){
-    const settings = getStorageObject(settingsKey);
+    get: (key) => {
+        const settings = JSON.parse(localStorage.getItem(settingsKey));
 
-    return settings[key];
+        if (settings === null) return undefined;
+
+        return settings[key];
+    }
 };
