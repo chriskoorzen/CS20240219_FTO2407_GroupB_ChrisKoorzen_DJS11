@@ -1,171 +1,168 @@
 /**
  * LocalStorage object structure
- * {
- *      history: Array<[Episode, datestamp]>
- *      favorites: Array<Episode>
- *      progress: Array<[Episode, timestamp]>
- *      settings: {...propNames}
+ * 
+ * settings: {
+ *      volume: <float>
  * }
+ * 
+ * users : {
+ *      userID: {
+ *          userName: string,
+ *          password: string,
+ *          loggedIn: Boolean,
+ *          data: {             // app context
+ *              favorites, progress, history
+ *          }
+ *      }
+ * }
+ * 
+ * ----
+ * showUUID: showId-seasonID-episodeID
+ * 
+ * favorites : {
+ *      UUID: datestamp
+ * }
+ * 
+ * progress : {
+ *      UUID: progress
+ * }
+ * 
+ * history : {
+ *      dateStamp: UUID
+ * }
+ * 
  */
 
-const storageKey = "QCast_data";
+export const showUUID = {
+    get: (showID, seasonID, episodeID) => {
+        return `${showID}-${seasonID}-${episodeID}`;
+    },
 
-function getStorageObject(subKey){
-    const data = JSON.parse(localStorage.getItem(storageKey));
-
-    if ( data===null || (data[subKey]===undefined) ){
-        if (subKey === settingsKey){
-            return new Object();
+    parse: (UUID) => {
+        const ids = UUID.split("-");
+        return {
+            showID: String(ids[0]),         // Expect string ids for shows
+            seasonID: parseInt(ids[1]),     // Expect number ids for seasons
+            episodeID: parseInt(ids[2])     // Expect number ids for episodes
         };
-        return new Array();
-    };
-
-    return data[subKey];
+    }
 };
 
-function updateStorage(subKey, newData){
-    let data = JSON.parse(localStorage.getItem(storageKey));
-
-    if (data===null){
-        data = new Object();
-    };
-    
-    data[subKey] = newData;
-    
-    localStorage.setItem(storageKey,JSON.stringify(data));
-};
-
-
-// History
-const historyKey = "history";
-
-export function getHistory(){
-    return getStorageObject(historyKey);
-};
-
-export function clearHistory(){
-    updateStorage(historyKey, new Array());  // Just replace with new array
-};
-
-export function pushToHistory(episode, datestamp){
-    const history = getStorageObject(historyKey);
-
-    history.push([episode, datestamp]);
-
-    updateStorage(historyKey, history);
-};
-
-
-//  Listening Progress
-const progressKey = "progress";
-
-export function getListeningProgress(){
-    getStorageObject(progressKey);
-};
-
-export function resetListeningProgress(episode){
-    const progress = getStorageObject(progressKey);
-
-    const index = progress.findIndex((element)=>{
-        let isEpisode = true;
-
-        isEpisode = (isEpisode && element[0].showID === episode.showID);
-        isEpisode = (isEpisode && element[0].seasonID === episode.seasonID);
-        isEpisode = (isEpisode && element[0].episodeID === episode.episodeID);
-
-        return isEpisode;
-    });
-
-    progress.splice(index, 1);
-
-    updateStorage(progressKey, progress);
-};
-
-export function resetListeningProgressAll(){
-    updateStorage(progressKey, new Array());
-};
-
-export function updateListeningProgress(episode, timestamp){
-    const progress = getStorageObject(progressKey);
-
-    const index = progress.findIndex((element)=>{
-        let isEpisode = true;
-
-        isEpisode = (isEpisode && element[0].showID === episode.showID);
-        isEpisode = (isEpisode && element[0].seasonID === episode.seasonID);
-        isEpisode = (isEpisode && element[0].episodeID === episode.episodeID);
-
-        return isEpisode;
-    });
-
-    if (index === -1){      // This is a new "progress"
-        progress.push(
-            [episode, timestamp]
-        );
-        return;
-    };
-
-    progress[index][1] = timestamp;
-
-    updateStorage(progressKey, progress);
-};
-
-// Favorites
-const favoritesKey = "favorites";
-
-export function getFavorites(){
-    return getStorageObject(favoritesKey);
-};
-
-export function saveFavorites(episode){
-    const favorites = getStorageObject(favoritesKey);
-
-    favorites.push(episode);
-
-    updateStorage(favoritesKey, favorites);
-};
-
-export function removeFavorites(episode){
-    const favorites = getStorageObject(favoritesKey);
-
-    const index = favorites.findIndex((element)=>{
-        let isEpisode = true;
-
-        isEpisode = (isEpisode && element.showID === episode.showID);
-        isEpisode = (isEpisode && element.seasonID === episode.seasonID);
-        isEpisode = (isEpisode && element.episodeID === episode.episodeID);
-
-        return isEpisode;
-    });
-
-    favorites.splice(index, 1);
-
-    updateStorage(favoritesKey, favorites);
-};
-
-export function clearFavorites(){
-    updateStorage(favoritesKey, new Array());
-};
 
 // Settings
 const settingsKey = "settings";
 
 export const settings = {
     update: (key, value) => {
-        let settings = JSON.parse(localStorage.getItem(settingsKey));
+        let settingData = JSON.parse(localStorage.getItem(settingsKey));
 
-        if (settings === null) settings = new Object();
+        if (settingData === null) settingData = new Object();
 
-        settings[key] = value;
+        settingData[key] = value;
 
-        localStorage.setItem(settingsKey, JSON.stringify(settings));
+        localStorage.setItem(settingsKey, JSON.stringify(settingData));
     },
 
     get: (key) => {
-        const settings = JSON.parse(localStorage.getItem(settingsKey));
+        const settingData = JSON.parse(localStorage.getItem(settingsKey));
 
-        if (settings === null) return undefined;
+        if (settingData === null) return undefined;
 
-        return settings[key];
+        return settingData[key];
+    }
+};
+
+// User
+const usersKey = "users";
+
+export const users = {
+    logIn: (username, password, stayLoggedIn) => {
+        const userData = JSON.parse(localStorage.getItem(usersKey));
+
+        if (userData === null) return false;
+
+        const request = Object.entries(userData).find(el => el[1].username === username);
+        if (request === undefined) return false;                // username does not match
+        if (request[1].password !== password) return false;     // password does not match
+
+        userData[request[0]].stayLoggedIn = stayLoggedIn;           // set user login persistence preference
+        localStorage.setItem(usersKey, JSON.stringify(userData));   // save
+        return request[0];                                          // return userID
+    },
+
+    signUp: (name, username, password, stayLoggedIn) => {
+        let userData = JSON.parse(localStorage.getItem(usersKey));
+
+        if (userData === null) userData = new Object();     // Init usersData
+        else {
+            const exists = Object.values(userData).find(
+                el => el.username === username
+            );
+
+            if (exists !== undefined) return false;         // This username already exists
+        };
+
+        const newID = Date.now();                           // Generate new user ID
+        userData[newID] = {                                 // Create new user object
+            name: name,
+            username: username,
+            password: password,
+            stayLoggedIn: stayLoggedIn,
+            data : {
+                favorites: {},
+                history: {},
+                progress: {}
+            },
+        };
+
+        localStorage.setItem(usersKey, JSON.stringify(userData));   // save
+        return newID;                                               // And return id
+    },
+
+    logOut: (userID) => {
+        const userData = JSON.parse(localStorage.getItem(usersKey));
+        console.log("storage logout", userID)
+
+        if (userData === null) throw new Error("Log out failed. userData is not initialized");
+
+        if (userData[userID] === undefined) throw new Error("Log out failed. This user does not exist.");
+
+        userData[userID].stayLoggedIn = false;
+        localStorage.setItem(usersKey, JSON.stringify(userData));   // save
+        return true;                                                // And return success
+    },
+
+    updateData: (userID, data) => {
+        const userData = JSON.parse(localStorage.getItem(usersKey));
+
+        if (userData === null) throw new Error("Update failed. userData is not initialized");
+
+        if (userData[userID] === undefined) throw new Error("Update failed. This user does not exist.");
+
+        userData[userID].data = data;
+
+        localStorage.setItem(usersKey, JSON.stringify(userData));   // save
+    },
+
+    findLoggedInUser: () => {
+        const userData = JSON.parse(localStorage.getItem(usersKey));
+
+        if (userData === null) return false;    // No user data yet
+
+        const user = Object.entries(userData).find(el => el[1].stayLoggedIn);
+
+        if (user === undefined) return false;   // No user found
+
+        return user[0];                         // Return ID
+    },
+
+    getUserData: (userID) => {
+        const userData = JSON.parse(localStorage.getItem(usersKey));
+
+        if (userData === null) throw new Error("Get failed. userData is not initialized");
+
+        if (userData[userID] === undefined) throw new Error("Get failed. This user does not exist.");
+
+        return userData[userID];
     }
 };
