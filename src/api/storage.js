@@ -121,7 +121,6 @@ export const users = {
 
     logOut: (userID) => {
         const userData = JSON.parse(localStorage.getItem(usersKey));
-        console.log("storage logout", userID)
 
         if (userData === null) throw new Error("Log out failed. userData is not initialized");
 
@@ -159,10 +158,20 @@ export const users = {
     getUserData: (userID) => {
         const userData = JSON.parse(localStorage.getItem(usersKey));
 
-        if (userData === null) throw new Error("Get failed. userData is not initialized");
+        if (userData === null) return null;
 
-        if (userData[userID] === undefined) throw new Error("Get failed. This user does not exist.");
+        if (userData[userID] === undefined) return null;
+
+        return userData[userID].data;
+    },
+
+    getUserCredentials: (userID) => {
+        const userData = JSON.parse(localStorage.getItem(usersKey));
+
+        if (userData === null) return null;
+
+        if (userData[userID] === undefined) return null;
 
         return userData[userID];
-    }
+    },
 };
