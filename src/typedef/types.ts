@@ -1,7 +1,13 @@
 
 export type Episode = {
-    episodeID: number,
+    showID : string,
     seasonID: number,
-    showID : number,
-    genreID: number
+    episodeID: number,
 };
+
+export type Favorite = {
+    date: number,
+    showTitle: string,
+    episodeTitle: string,
+    imgUrl: string
+}
