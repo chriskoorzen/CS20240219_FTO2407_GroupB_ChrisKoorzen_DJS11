@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useContext } from "react";
 import { 
     IconButton,
     Menu,
@@ -7,28 +7,32 @@ import {
     Button,
 } from "@material-tailwind/react";
 
-import { settings } from "../api/storage";
-
-// import placeholderAudio from "../dev/placeholder-audio.mp3";
-import placeholderAudio from "../dev/pitch.mp3";
+import { settings, users, showUUID } from "../api/storage";
+import { AudioContext } from "../page/layouts";
 
 
-export function AudioPlayer({ audioURL, progress=0 }){
+export function AudioPlayer({ audio }){
+    // audio obj = {URL, progress}
+    const { userID, episode } = useContext(AudioContext);
+    const autoPlay = false;
     const audioElement = useRef(null);
     const audioSlider = useRef(null);
-    const [maxPlaybackDuration, setMaxPlaybackDuration] = useState(progress);
-    const [currentPlayback, setCurrentPlayback] = useState(progress);
+    const [maxPlaybackDuration, setMaxPlaybackDuration] = useState(audio.progress);
+    const [currentPlayback, setCurrentPlayback] = useState(audio.progress);
     const [play, setPlay] = useState(false);
 
     console.log("reload AudioPlayer")
     useEffect(()=>{
-        audioElement.current.fastSeek(progress);
-    }, [progress])
+        console.log("useEffect")
+        audioElement.current.load();
+        audioElement.current.fastSeek(audio.progress);
+        // pauseAudio();
+    }, [audio])
 
 
     function audioSliderDrag(event){
         audioElement.current.fastSeek(event.target.value)
-        console.log("audioSliderDrag: Now at", event.target.value)
+        console.log("audioSliderDrag", event.target.value)
     };
 
     function slideRelease(event){
@@ -49,13 +53,28 @@ export function AudioPlayer({ audioURL, progress=0 }){
         setPlay(val=> !val);
     };
 
+    function pauseAudio(){
+        console.log("pauseAudio")
+        audioElement.current.pause();
+        setPlay(false);
+    };
+
+    function playAudio(){
+        console.log("playAudio")
+        audioElement.current.play()
+        .catch((error)=>{console.error("playback failed", error)});
+        setPlay(true);
+    };
+
     function audioSliderUpdate(event){      // when playing
+        console.log("audioSliderUpdate")
         audioSlider.current.value = event.target.currentTime;
         setCurrentPlayback(audioSlider.current.value);
+        saveProgress(currentPlayback, maxPlaybackDuration);
     };
 
     function audioMetaDataLoad(event){      // when metadata is known
-        console.log("Total duration", event.target.duration);
+        console.log("audioMetaDataLoad", event.target.duration);
         if (isNaN(event.target.duration) || !isFinite(event.target.duration)){
             throw new Error("Expected a number for duration")
         };
@@ -63,25 +82,33 @@ export function AudioPlayer({ audioURL, progress=0 }){
         setMaxPlaybackDuration(Math.round(event.target.duration));
     };
 
+    function saveProgress(currentTime, totalTime){
+        if (userID){
+            const data = users.getUserData(userID);
+            data.progress[showUUID.get(episode.showID, episode.seasonID, episode.episodeID)] = (currentTime / totalTime).toFixed(2);
+            users.updateData(userID, data);
+        };
+    };
+
     return (
 
-        <div className="flex flex-row gap-4 items-center px-4 h-16 w-fit bg-gray-700">
+        <div className="flex flex-row gap-4 items-center px-4 h-16 w-1/2 bg-gray-900">
 
-            <IconButton onClick={handlePlayPause} >
+            <IconButton onClick={handlePlayPause} className="bg-gray-800">
                 <i className={play ? "fas fa-pause": "fas fa-play"} />
             </IconButton>
             
             <input
                 ref={audioSlider}
-                className="w-72 h-2 rounded-lg cursor-pointer dark:bg-gray-700"
+                className="grow h-2 rounded-lg cursor-pointer dark:bg-gray-700"
                 type="range"
-                defaultValue={progress}
+                defaultValue={audio.progress}
                 min={0}
                 max={maxPlaybackDuration}
                 onChange={audioSliderDrag}
                 onMouseUp={slideRelease}
             />
-            <div className="flex">
+            <div className="flex text-white">
                 <p>{transformSeconds(currentPlayback)}</p>
                 <p>/</p>
                 <p>{transformSeconds(maxPlaybackDuration)}</p>
@@ -89,12 +116,14 @@ export function AudioPlayer({ audioURL, progress=0 }){
 
             <VolumeControl audioElement={audioElement}/>
 
-            <audio
+            <audio            
                 ref={audioElement}
-                src={placeholderAudio}
+                src={audio.URL}
                 onLoadedMetadata={audioMetaDataLoad}
                 onTimeUpdate={audioSliderUpdate}
                 onEnded={handlePlayPause}
+                onLoadStart={()=>{console.log("audio loaidng resource")}}
+                onCanPlay={()=>{if(autoPlay)playAudio()}}
             ></audio>
         </div>
     );
@@ -123,16 +152,16 @@ function VolumeControl({ audioElement }){
     return (
         <Menu placement="top" allowHover={true}>
             <MenuHandler>
-                <Button className="flex items-center gap-3 outline-none">
+                <Button className="flex items-center gap-3 outline-none bg-gray-800">
                     <i className={
-                        volume > 0.35 ? "fas fa-volume-up w-4 text-left":
+                        volume > 0.4 ? "fas fa-volume-up w-4 text-left":
                         volume > 0 ? "fas fa-volume-down w-4 text-left":
                         "fas fa-volume-off w-4 text-left"
                     }/>
                     Volume
                 </Button>
             </MenuHandler>
-            <MenuList className="h-fit min-w-fit">
+            <MenuList className="h-fit min-w-fit bg-gray-800">
                     <input
                         ref={volumeSlider}
                         className="h-28 outline-none"

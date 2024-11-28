@@ -1,6 +1,7 @@
 import { useState, useContext } from "react";
 import { Link, useOutletContext } from "react-router-dom";
 
+import { Progress } from "@material-tailwind/react";
 import { BsStar, BsStarFill } from "react-icons/bs";
 
 import { AsyncImage, ImageSlider } from "./basic";
@@ -125,10 +126,12 @@ function Episode({ ep }){
     const { show, seasonID } = useContext(ShowContext);
     const { setActiveEpisode, userID } = useOutletContext();
 
-    let userData = users.getUserData(userID);
-    let fav = false;
+    const userData = userID ? users.getUserData(userID) : null;
+    let fav;
+    let progress;
     if (userData !== null){
         fav = Object.keys(userData.favorites).includes(showUUID.get(show.id, seasonID, ep.episode));
+        progress = parseFloat(userData.progress[showUUID.get(show.id, seasonID, ep.episode)]) * 100;
     };
 
     const [isFavorite, setIsFavorite] = useState(fav);
@@ -147,7 +150,7 @@ function Episode({ ep }){
                 date: Date.now(),
                 showTitle: show.title,
                 episodeTitle: ep.title,
-                imgUrl: show.image
+                imgUrl: show.seasons.find(el => el.season === parseInt(seasonID)).image
             };  // save basic data, to avoid retrieving entire show object later
 
             users.updateData(userID, userData);
@@ -159,9 +162,9 @@ function Episode({ ep }){
         <div className="bg-gray-100 p-2 my-2 rounded">
             <p>Episode {ep.episode}</p>
             <p>{ep.title}</p>
-            {isFavorite ?
+            { userID ? isFavorite ?
                 <BsStarFill className="fill-green-500" onClick={toggleFavorite} /> :
-                <BsStar className="star " onClick={toggleFavorite} />
+                <BsStar className="star " onClick={toggleFavorite} /> : null
             }
             <p>{ep.description}</p>
             <button
@@ -173,6 +176,7 @@ function Episode({ ep }){
                     );
                 }}
             >Play</button>
+            {progress ? <Progress value={progress} size="sm"/> : null}
         </div>
     );
 };
