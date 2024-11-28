@@ -43,7 +43,7 @@ export function ImageSlider({ setActiveIndexCallback, children }) {
             const overflow = container.current.scrollWidth > container.current.clientWidth;
             setIsOverflowing(overflow);
         }, 300);
-        
+
     });
 
     function scrollRight(){

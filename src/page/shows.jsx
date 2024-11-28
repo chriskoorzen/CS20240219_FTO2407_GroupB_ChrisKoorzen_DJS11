@@ -1,9 +1,9 @@
 import { Suspense, createContext } from "react";
-import { useParams, Await, useNavigate, Link } from "react-router-dom";
-import { useRouteLoaderData, useAsyncValue } from "react-router";
+import { useParams, Await, Link } from "react-router-dom";
+import { useRouteLoaderData } from "react-router";
 
 import { AsyncImage } from "../component/basic";
-import { FullShowHeader, SeasonSelector } from "../component/infoCard";
+import { ShowHeader, SeasonSelector } from "../component/infoCard";
 
 import { getShowInfo } from "../api/server";
 
@@ -33,7 +33,7 @@ export function FullShowPage(){
                 <Await
                     resolve={previewsByIndex}
                     children={indexedPreviews => 
-                        <FullShowHeader show={indexedPreviews[showID]}/>
+                        <ShowHeader show={indexedPreviews[showID]}/>
                     }
                 >
                 </Await>
