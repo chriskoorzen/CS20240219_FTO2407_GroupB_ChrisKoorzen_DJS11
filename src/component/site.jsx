@@ -15,7 +15,7 @@ import iconURL from "../asset/music.png";
 import { users, showUUID } from "../api/storage";
 import { AudioContext } from "../page/layouts";
 
-import placeholderSound from "../dev/pitch.mp3"
+import { sanitizeHtmlLiterals } from "../utils/strings";
 
 
 export function SiteHeader({userLogOutFn}){
@@ -54,7 +54,7 @@ export function SiteHeader({userLogOutFn}){
 export function SiteFooter(){
     const { userID, episode } = useContext(AudioContext);
     
-
+    // console.log("FOOTER::trigger::")
     if (episode === null){
         return (
             <div className="h-16 w-full bg-lime-200">
@@ -64,34 +64,31 @@ export function SiteFooter(){
     };
     const { showID, seasonID, episodeID } = episode;
     const { shows } = useRouteLoaderData("root");
-    const userData = users.getUserData(userID);
-    
-    console.log("reload footer")
 
     return (
         <Suspense>
             <Await 
                 resolve={shows[showID]} 
                 children={show => {
-                    console.log("awaited", seasonID, episodeID)
+                    // console.log("FOOTER::awaited", seasonID, episodeID)
                     const season = show.seasons.find(el => el.season === parseInt(seasonID));
                     const episode = season.episodes.find(el => el.episode === parseInt(episodeID));
                     const url = episode.file;
 
+                    const userData = users.getUserData(userID);
                     let pro = 0;
                     if (userData !== null){
                         pro = userData.progress[showUUID.get(showID, seasonID, episodeID)];
-                        pro = !pro ? 0 : parseInt(pro); // if undefined or null, make zero, else get progress
+                        pro = !pro ? 0 : parseFloat(pro); // if undefined or null, make zero, else get progress
+                        // console.log("progresSION", pro)
                     };
-
-                    // let isFav = Object.keys(userData.favorites).includes(showUUID.get(showID, seasonID, episodeID));
 
                     return (
                         <div className="h-16 w-full bg-gray-900 flex flex-row">
                             <Link to={`/show/${showID}/season/${seasonID}`} className="block w-1/2 h-full">
                                 <div className="size-full px-4 flex flex-col justify-center">
                                     <div className="text-white flex flex-row justify-between">
-                                        <p className="font-bold">{show.title}</p>
+                                        <p className="font-bold">{sanitizeHtmlLiterals(show.title)}</p>
                                         <p>Season {seasonID}</p>
                                     </div>
                                     <div className="text-white flex flex-row">
@@ -100,7 +97,7 @@ export function SiteFooter(){
                                     </div>
                                 </div>
                             </Link>
-                            <AudioPlayer audio={{URL: url, progress: pro}} />
+                            <AudioPlayer audioUrl={url} progress={pro} autoplay={true}/>
                         </div>
                     )
                 }}>
