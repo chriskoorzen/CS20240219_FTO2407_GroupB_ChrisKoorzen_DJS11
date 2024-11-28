@@ -27,6 +27,10 @@ export function AudioPlayer({ audioUrl, progress, autoplay }){
     const audioSlider = useRef(null);
     const volumeSlider = useRef(null);
 
+    window.onbeforeunload = (event) => {
+        if (isPlaying) event.preventDefault();
+    };
+
 
     // -- Audio Element functionality --
     function handleLoadingProgress(){           // when still downloading data
