@@ -15,7 +15,7 @@ export const App = createBrowserRouter(
             <Route index element={<LandingPage />} />
             <Route path="browse/" element={<BrowsePage />} />
             <Route path="browse/genres/" element={<GenresPage />} />
-            <Route path="show/:showid/" element={<FullShowPage />}>
+            <Route path="show/:showID/season/:seasonID" element={<FullShowPage />}>
 
             </Route>
         </Route>

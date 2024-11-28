@@ -1,5 +1,5 @@
-import { Suspense, useRef, useState, useEffect } from "react";
-import { useParams, Await, useNavigate } from "react-router-dom";
+import { Suspense, createContext } from "react";
+import { useParams, Await, useNavigate, Link } from "react-router-dom";
 import { useRouteLoaderData, useAsyncValue } from "react-router";
 
 import { AsyncImage } from "../component/basic";
@@ -8,29 +8,30 @@ import { FullShowHeader, SeasonSelector } from "../component/infoCard";
 import { getShowInfo } from "../api/server";
 
 
+export const ShowContext = createContext(null);
+
 export function FullShowPage(){
-    const navigate = useNavigate();
-    const showID = useParams().showid;
-    const { previews, shows } = useRouteLoaderData("root");
+    const { showID, seasonID } = useParams();
+    const { previewsByIndex, shows } = useRouteLoaderData("root");
 
-    console.log("Shows Page", showID, previews)
+    console.log("Shows Page", showID, seasonID)
 
-    if (!shows[showID]){
+    if (!shows[showID]){    // Load data if not exists
         shows[showID] = getShowInfo([showID]);
         console.log(`Show ${showID} not found`, shows);
     };
 
     return (
         <>
-            <button
-                onClick={() => navigate(-1)}
-                className="bg-gray-200 rounded-lg px-4 py-2 z-10 mb-4"
+            <Link
+                to="/"
+                className="inline-block bg-gray-200 rounded-lg px-4 py-2 z-10 mb-4"
             >
                     <i className="fas fa-arrow-left" /> Go Back
-            </button>
+            </Link>
             <Suspense fallback={<h1>Loading Show Header...</h1>}>
                 <Await
-                    resolve={previews.then(preArray => preArray.reduce(((obj, show) => {obj[show.id] = show; return obj}), {}))}
+                    resolve={previewsByIndex}
                     children={indexedPreviews => 
                         <FullShowHeader show={indexedPreviews[showID]}/>
                     }
@@ -41,8 +42,10 @@ export function FullShowPage(){
             <Suspense fallback={<h1>Loading Seasons...</h1>}>
                 <Await
                     resolve={shows[showID]}
-                    children={showByID =>
-                        <SeasonSelector show={showByID}/>
+                    children={show =>
+                        <ShowContext.Provider value={{ show }}>
+                            <SeasonSelector seasonID={seasonID}/>
+                        </ShowContext.Provider>
                     }
                 >
                 </Await>
