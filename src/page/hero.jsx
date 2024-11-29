@@ -6,6 +6,7 @@ import { Dialog } from "@material-tailwind/react";
 
 import { ImageSlider, SliderItem } from "../component/basic";
 import { FullShowPreview, SmallShowPreview, SmallGenrePreview } from "../component/infoCard";
+import { LoadingSpinner } from "../component/loaders";
 
 import { genreStockImages, showGenres } from "../api/server";
 import { users, showUUID } from "../api/storage";
@@ -37,7 +38,7 @@ export function LandingPage(){
             <h1 className="text-white text-3xl font-bold text-center mb-12 mt-5">
                 Discover the best shows from around the world
             </h1>
-            <Suspense fallback={<h1 className="text-2xl font-bold p-4 text-center">Loading blog posts...</h1>}>
+            <Suspense fallback={<LoadingSpinner loadingText={"All Titles"}/>}>
                 <Await resolve={previews}>
                     {previews => {
                         const sortedPreviews = previews.toSorted((a, b) => a.title > b.title);
@@ -78,8 +79,6 @@ export function LandingPage(){
                         );
                     }}
                 </Await>
-            </Suspense>
-            <Suspense fallback={<h1 className="text-2xl font-bold p-4 text-center">Loading blog posts...</h1>}>
                 <Await resolve={ Promise.all([previewsByIndex, ...Object.values(genres)]) }>
                     {data => {
                         const previewsByIndex = data[0];

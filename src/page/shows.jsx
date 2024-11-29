@@ -2,8 +2,8 @@ import { Suspense, createContext } from "react";
 import { useParams, Await, Link } from "react-router-dom";
 import { useRouteLoaderData } from "react-router";
 
-import { AsyncImage } from "../component/basic";
 import { ShowHeader, SeasonSelector } from "../component/infoCard";
+import { LoadingSpinner } from "../component/loaders";
 
 import { getShowInfo } from "../api/server";
 
@@ -30,7 +30,7 @@ export function FullShowPage(){
                 <i className="fas fa-arrow-left" /> Go Back
             </Link> */}
 
-            <Suspense fallback={<h1>Loading Show Header...</h1>}>
+            <Suspense fallback={<LoadingSpinner loadingText={"show data"}/>}>
                 <Await resolve={previewsByIndex}>
                     {indexedPreviews => 
                         <ShowHeader show={indexedPreviews[showID]}/>
@@ -38,7 +38,7 @@ export function FullShowPage(){
                 </Await>
             </Suspense>
             
-            <Suspense fallback={<h1>Loading Seasons...</h1>}>
+            <Suspense fallback={<LoadingSpinner loadingText={"season data"}/>}>
                 <Await resolve={shows[showID]}>
                     {show =>
                         <ShowContext.Provider value={{ show }}>

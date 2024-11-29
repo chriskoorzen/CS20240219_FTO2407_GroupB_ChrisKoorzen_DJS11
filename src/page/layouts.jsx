@@ -37,7 +37,7 @@ export function MainLayout(){
     };
 
     return (
-        <div className="size-full flex flex-col justify-between bg-gray-800">
+        <div className="size-full flex flex-col justify-between bg-gray-600">
             <SiteHeader userLogOutFn={logUserOut} userID={userID} setUserID={setUserID}/>
 
             <div className="grow grid grid-cols-[360px_minmax(900px,_1fr)] gap-3">    

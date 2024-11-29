@@ -3,8 +3,8 @@ import { Await, useSearchParams } from "react-router-dom";
 import { useRouteLoaderData, useAsyncValue } from "react-router";
 
 import { Input, Button, Dialog } from "@material-tailwind/react";
-
 import { SmallerShowPreview, FullShowPreview } from "../component/infoCard";
+import { LoadingSpinner } from "../component/loaders";
 
 import { showGenres } from "../api/server";
 
@@ -117,7 +117,7 @@ export function BrowsePage(){
             <div
                 className="w-full flex flex-row flex-wrap content-start justify-start gap-3 overflow-y-auto"
             >
-                <Suspense fallback={<h1 className="text-2xl font-bold p-4 text-center">Loading blog posts...</h1>}>
+                <Suspense fallback={<LoadingSpinner loadingText={"Shows"}/>}>
                     <Await resolve={previews}>
                         {previews => {
                             if (searchParams.has("title")){

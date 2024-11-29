@@ -6,6 +6,7 @@ import { Input, Button, Dialog } from "@material-tailwind/react";
 
 import { FullShowPreview, SmallShowPreview } from "../component/infoCard";
 import { AsyncImage, ImageSlider, SliderItem } from "../component/basic";
+import { LoadingSpinner } from "../component/loaders";
 
 import { showGenres, genreStockImages } from "../api/server";
 
@@ -24,7 +25,7 @@ export function GenresPage(){
                     className="md:size-fit lg:size-fit 2xl:size-fit md:max-w-fit lg:max-w-fit 2xl:max-w-fit md:min-w-fit lg:min-w-fit 2xl:min-w-fit">
                     <FullShowPreview show={showObject}/>
                 </Dialog>
-                <Suspense fallback={<h1 className="text-2xl font-bold p-4 text-center">Loading genres...</h1>}>
+                <Suspense fallback={<LoadingSpinner loadingText={"Genres"}/>}>
                     <Await resolve={Promise.all([previewsByIndex, ...Object.values(genres)])}>
                         {genreData => {
                             const previewsByIndex = genreData[0];

@@ -57,8 +57,8 @@ export function SiteFooter(){
     // console.log("FOOTER::trigger::")
     if (episode === null){
         return (
-            <div className="h-16 w-full bg-lime-200">
-
+            <div className="h-16 w-full bg-gray-900 flex items-center justify-center">
+                <p className="text-white text-lg ">&copy; QCast Podcasts. All rights reserved.</p>
             </div>
         );
     };
@@ -70,9 +70,8 @@ export function SiteFooter(){
 
     return (
         <Suspense>
-            <Await 
-                resolve={shows[showID]} 
-                children={show => {
+            <Await resolve={shows[showID]}>
+                {show => {
                     console.log("FOOTER::awaited", seasonID, episodeID, show)
                     const season = show.seasons.find(el => el.season === parseInt(seasonID));
                     const episode = season.episodes.find(el => el.episode === parseInt(episodeID));
@@ -103,7 +102,7 @@ export function SiteFooter(){
                             <AudioPlayer audioUrl={url} progress={pro} autoplay={true}/>
                         </div>
                     )
-                }}>
+                }}
             </Await>
         </Suspense>
     );

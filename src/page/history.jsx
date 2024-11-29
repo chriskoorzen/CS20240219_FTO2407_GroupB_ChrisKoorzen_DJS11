@@ -3,6 +3,7 @@ import { useRouteLoaderData, Await, useOutletContext, Link, replace } from "reac
 
 import { Progress, Button } from "@material-tailwind/react";
 import { AsyncImage } from "../component/basic";
+import { LoadingSpinner } from "../component/loaders";
 
 import { users, showUUID } from "../api/storage";
 import { timestampToDateTime } from "../utils/datetime";
@@ -29,7 +30,7 @@ export function HistoryPage(){
                     onClick={clearHistory}
                 >Clear History</Button>
             </div>
-            <Suspense>
+            <Suspense fallback={<LoadingSpinner loadingText={"History"}/>}>
                 <Await resolve={previewsByIndex}>
                     {previewsByIndex => {
                         const userData = users.getUserData(userID);
