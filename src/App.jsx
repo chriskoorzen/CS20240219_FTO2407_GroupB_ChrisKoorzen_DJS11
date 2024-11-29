@@ -6,6 +6,7 @@ import { FullShowPage } from "./page/shows";
 import { BrowsePage } from "./page/browse";
 import { GenresPage } from "./page/genres";
 import { FavoritesPage } from "./page/favorites";
+import { HistoryPage } from "./page/history";
 
 import { loadInitialData } from "./api/server";
 
@@ -18,6 +19,7 @@ export const App = createBrowserRouter(
             <Route path="browse/genres/" element={<GenresPage />} />
             <Route path="show/:showID/season/:seasonID" element={<FullShowPage />} />
             <Route path=":user/favorites" element={<FavoritesPage />} />
+            <Route path=":user/history" element={<HistoryPage />} />
         </Route>
     )
 );
