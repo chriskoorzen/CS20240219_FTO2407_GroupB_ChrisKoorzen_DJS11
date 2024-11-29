@@ -36,6 +36,10 @@ export function HistoryPage(){
                         const userData = users.getUserData(userID);
                         let h = Object.entries(userData.history).sort((a, b) => a[0] < b[0] );
 
+                        if(!h.length) return (
+                            <p className="text-gray-600 font-bold text-xl">Nothing here yet.</p>
+                        );
+
                         return (
                             h.map(el => {
                                 const { showID, seasonID, episodeID } = showUUID.parse(el[1]);

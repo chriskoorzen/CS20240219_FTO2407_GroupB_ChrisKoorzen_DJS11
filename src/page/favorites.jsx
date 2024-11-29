@@ -33,27 +33,28 @@ export function FavoritesPage(){
             break;
         case "By Show":
             favorites = users.getUserData(userID).favorites;
-            grouped = Object.keys(favorites).reduce((obj, value)=>{
-                const {showID, seasonID, episodeID} = showUUID.parse(value);
-                const showName = favorites[value].showTitle;
-                const favData = favorites[value];
-                favData.showID = showID;
-                // Destructure and build an indexed "showName-seasonId-episodeID-Favorite" object
-                if (obj[showName]){
-                    if (obj[showName][seasonID]){
-                        obj[showName] = { ...obj[showName], [seasonID]: {...obj[showName][seasonID], [episodeID]: favData}};
-                    }
-                    else {
-                        obj[showName] = { ...obj[showName] ,[seasonID]: {[episodeID]: favData}};
-                    }
-                } else {
-                    obj[showName] = {[seasonID]: {[episodeID]: favData}};
-                };
-                return obj;
-            }, new Object());
+            if (favorites.length){
+                grouped = Object.keys(favorites).reduce((obj, value)=>{
+                    const {showID, seasonID, episodeID} = showUUID.parse(value);
+                    const showName = favorites[value].showTitle;
+                    const favData = favorites[value];
+                    favData.showID = showID;
+                    // Destructure and build an indexed "showName-seasonId-episodeID-Favorite" object
+                    if (obj[showName]){
+                        if (obj[showName][seasonID]){
+                            obj[showName] = { ...obj[showName], [seasonID]: {...obj[showName][seasonID], [episodeID]: favData}};
+                        }
+                        else {
+                            obj[showName] = { ...obj[showName] ,[seasonID]: {[episodeID]: favData}};
+                        }
+                    } else {
+                        obj[showName] = {[seasonID]: {[episodeID]: favData}};
+                    };
+                    return obj;
+                }, new Object());
+            };
             break;
     };
-
     return (
         <div className="">
             <h1 className="text-white text-2xl font-bold mb-6">Your Favorite Shows</h1>
@@ -85,7 +86,7 @@ export function FavoritesPage(){
                 </button>
             </div>
             <div>
-                { grouped ? 
+                { grouped ?
                     Object.keys(grouped).map(show => {
                         return (
                             <fieldset className="text-white border-2 border-gray-700/20 p-4 rounded-lg flex flex-row gap-3 my-6">
@@ -126,7 +127,7 @@ export function FavoritesPage(){
                         );
                     })
                     
-                    :
+                    : favorites.length ?
 
                     favorites.map(data => {
                         const {showID, seasonID, episodeID} = showUUID.parse(data[0]);
@@ -163,7 +164,9 @@ export function FavoritesPage(){
                                 <AsyncImage imgUrl={data[1].imgUrl} className="size-28 rounded-lg" />
                             </div>
                         )
-                    })
+                    }) 
+                    : 
+                    <p className="text-gray-600 font-bold text-xl mt-10">Nothing favorited yet. Click on the star icon to add episodes to your favorites.</p>
                 }
             </div>
         </div>
