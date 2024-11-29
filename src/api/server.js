@@ -50,15 +50,15 @@ export const showGenres = {
 };
 
 export const genreStockImages = [
-    {id: 1, image: "/public/images/personal-growth.jpg"},
-    {id: 2, image: "/public/images/investigative-journalism.jpg"},
-    {id: 3, image: "/public/images/history.jpg"},
-    {id: 4, image: "/public/images/comedy.jpg"},
-    {id: 5, image: "/public/images/entertainment.jpg"},
-    {id: 6, image: "/public/images/business.jpg"},
-    {id: 7, image: "/public/images/fiction.jpg"},
-    {id: 8, image: "/public/images/news.jpg"},
-    {id: 9, image: "/public/images/kids-and-family.jpg"},
+    {id: 1, image: "/images/personal-growth.jpg"},
+    {id: 2, image: "/images/investigative-journalism.jpg"},
+    {id: 3, image: "/images/history.jpg"},
+    {id: 4, image: "/images/comedy.jpg"},
+    {id: 5, image: "/images/entertainment.jpg"},
+    {id: 6, image: "/images/business.jpg"},
+    {id: 7, image: "/images/fiction.jpg"},
+    {id: 8, image: "/images/news.jpg"},
+    {id: 9, image: "/images/kids-and-family.jpg"},
 ];
 
 
