@@ -104,13 +104,23 @@ export function SignUp({setUserID}){
                         <Typography variant="h4" color="white">
                             Log In
                         </Typography>
-                        <Typography
-                            className="mb-3 font-normal"
-                            variant="paragraph"
-                            color="white"
-                        >
-                            Enter your username and password to Log In.
-                        </Typography>
+                        {loginError ? 
+                            <Typography
+                                className="mb-3 font-normal"
+                                variant="paragraph"
+                                color="red"
+                            >
+                                Username and password not recognized.
+                            </Typography>
+                            :
+                            <Typography
+                                className="mb-3 font-normal"
+                                variant="paragraph"
+                                color="white"
+                            >
+                                Enter your username and password to Log In.
+                            </Typography>
+                        }
                         <Typography className="-mb-2" variant="h6" color="white">
                             Your Username
                         </Typography>
@@ -155,13 +165,31 @@ export function SignUp({setUserID}){
                         <Typography variant="h4" color="purple">
                             Sign Up
                         </Typography>
-                        <Typography
-                            className="mb-3 font-normal"
-                            variant="paragraph"
-                            color="white"
-                        >
-                            Enter your details to Sign Up.
-                        </Typography>
+                        {passMatchError ?
+                            <Typography
+                                className="mb-3 font-normal"
+                                variant="paragraph"
+                                color="red"
+                            >
+                                Passwords must match
+                            </Typography>
+                        : userExistsError ?
+                            <Typography
+                                className="mb-3 font-normal"
+                                variant="paragraph"
+                                color="red"
+                            >
+                                This username is taken.
+                            </Typography>
+                        :
+                            <Typography
+                                className="mb-3 font-normal"
+                                variant="paragraph"
+                                color="white"
+                            >
+                                Enter your details to Sign Up.
+                            </Typography>
+                        }
 
                         <Typography className="-mb-2" variant="h6" color="white">
                             Your Name
