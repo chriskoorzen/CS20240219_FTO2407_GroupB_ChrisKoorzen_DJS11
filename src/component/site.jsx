@@ -1,24 +1,20 @@
 import { Suspense, useContext } from "react";
 import { Link, useRouteLoaderData, Await } from "react-router-dom";
 
-import {
-    Navbar,
-    Button,
-    Typography,
-    progress
-} from "@material-tailwind/react";
+import { Navbar, Button, Typography } from "@material-tailwind/react";
 
 import { AudioPlayer } from "../component/audioplayer";
+import { SignUp } from "./user";
 
 import iconURL from "../asset/music.png";
 
 import { users, showUUID } from "../api/storage";
+import { getShowInfo } from "../api/server";
+import { sanitizeHtmlLiterals } from "../utils/strings";
 import { AudioContext } from "../page/layouts";
 
-import { sanitizeHtmlLiterals } from "../utils/strings";
 
-
-export function SiteHeader({userLogOutFn}){
+export function SiteHeader({ userLogOutFn, setUserID, userID }){
 
     return (
         <Navbar
@@ -41,10 +37,14 @@ export function SiteHeader({userLogOutFn}){
                     </Typography>
                 </Link>
 
-                <div className="flex gap-2">
-                    <Button>Sign Up</Button>
-                    <Button onClick={userLogOutFn}>Log Out</Button>
-                </div>
+                {userID ? 
+                    <div className="flex gap-5 items-center">
+                        <h1 className="font-bold text-lg">Welcome, {users.getUserCredentials(userID).name}</h1>
+                        <Button onClick={userLogOutFn}>Log Out</Button>
+                    </div>
+                    :
+                    <SignUp setUserID={setUserID}/>
+                }
             </div>
     </Navbar>
     );
@@ -64,13 +64,16 @@ export function SiteFooter(){
     };
     const { showID, seasonID, episodeID } = episode;
     const { shows } = useRouteLoaderData("root");
+    if (!shows[showID]){    // Load data if not exists
+        shows[showID] = getShowInfo([showID]);
+    };
 
     return (
         <Suspense>
             <Await 
                 resolve={shows[showID]} 
                 children={show => {
-                    // console.log("FOOTER::awaited", seasonID, episodeID)
+                    console.log("FOOTER::awaited", seasonID, episodeID, show)
                     const season = show.seasons.find(el => el.season === parseInt(seasonID));
                     const episode = season.episodes.find(el => el.episode === parseInt(episodeID));
                     const url = episode.file;

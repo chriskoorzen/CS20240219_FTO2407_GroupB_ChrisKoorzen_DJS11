@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, Link } from "react-router-dom";
 
 import { Progress } from "@material-tailwind/react";
 import { AsyncImage } from "../component/basic";
@@ -137,14 +137,14 @@ export function FavoritesPage(){
                         return (
                             <div className="p-2 bg-gray-800 rounded-lg m-2 text-white flex justify-between max-w-[800px]">
                                 <div className="grow flex flex-col justify-evenly">
+                                    <p className="font-bold">{data[1].showTitle}</p>
                                     <div className="w-full flex justify-between">
-                                        <p className="font-bold">{data[1].showTitle}</p>
+                                        <p>{data[1].episodeTitle}</p>
                                         <button
                                             className="mr-3 px-2 py-1 rounded-lg bg-gray-900"
                                             onClick={()=>{setActiveEpisode(showID, seasonID, episodeID)}}
                                         ><i className="fas fa-play" /> Play Now</button>
                                     </div>
-                                        <p>{data[1].episodeTitle}</p>
                                     <div className="flex">
                                         <p className="mr-5">Season {seasonID}</p>
                                         <p>Episode {episodeID}</p>

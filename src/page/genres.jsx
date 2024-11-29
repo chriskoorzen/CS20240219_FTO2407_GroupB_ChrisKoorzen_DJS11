@@ -34,9 +34,9 @@ export function GenresPage(){
                                     <div className="relative bg-gray-400/20 rounded-lg mb-6">
                                         <AsyncImage
                                             imgUrl={genreStockImages[index].image}
-                                            className="h-86 rounded-lg mx-auto opacity-40"
+                                            className="h-96 rounded-lg mx-auto opacity-40"
                                         />
-                                        <p className="absolute top-4 right-1/2 text-3xl text-shadow font-bold">{genre.title}</p>
+                                        <p className="absolute top-4 right-1/2 text-3xl text-shadow font-bold text-right">{genre.title}</p>
                                         <p className="absolute bottom-4 px-24 py-4 bg-gray-900/80 ">{genre.description}</p>
                                     </div>
                                     <ImageSlider >

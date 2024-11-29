@@ -247,7 +247,7 @@ function Episode({ ep }){
             <p className="px-6 py-2 min-h-8 max-h-28 overflow-y-auto bg-gray-900 rounded-lg">{ep.description ? ep.description : (<span><i className="fas fa-ban" /> No Description available</span>)}</p>
             <div className="flex flex-row justify-between items-center w-full">
                 <button
-                    className="my-3"
+                    className="my-3 bg-gray-900 py-1 px-2 rounded-lg"
                     onClick={()=>{
                         setActiveEpisode(
                             show.id,
