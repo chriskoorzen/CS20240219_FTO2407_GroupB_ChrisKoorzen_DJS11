@@ -4,7 +4,7 @@ import { Link, useOutletContext } from "react-router-dom";
 import { Progress } from "@material-tailwind/react";
 import { BsStar, BsStarFill } from "react-icons/bs";
 
-import { AsyncImage, ImageSlider } from "./basic";
+import { AsyncImage, ImageSlider, SliderItem } from "./basic";
 
 import { sanitizeHtmlLiterals } from "../utils/strings";
 import { timestampToMonth } from "../utils/datetime";
@@ -107,28 +107,42 @@ export function SmallGenrePreview({ genre }){
     );
 };
 
+function SmallSeasonView({season}){
+
+    return (
+        <div className="bg-gray-800 rounded-lg p-2 flex gap-2 text-white">
+            <AsyncImage imgUrl={season.image} className="size-40 rounded-lg"/>
+            <div>
+                <p className="pr-3 font-semibold">Season {season.season}</p>
+                <p className="pr-3 mt-4">{season.episodes.length > 1 ? `${season.episodes.length} Episodes` : `${season.episodes.length} Episode`}</p>
+            </div>
+        </div>
+    );
+};
+
 
 export function ShowHeader({show}){
 
     return (
-        <div className="text-white flex flex-col gap-5">
-            <div className="flex flex-row ">
-                <div className="w-48 shrink-0">
-                    <AsyncImage
-                        imgUrl={show.image}
-                        className="size-48 rounded-lg border-2"
-                    />
-                    <div className="my-3 flex justify-evenly">
-                        {
-                            show.genres.map(genreID => {
-                                return <p key={genreID} className="bg-purple-500 rounded-full p-2">{showGenres[genreID]}</p>
-                            })
-                        }
-                    </div>
+        <div className="w-full mb-10 mt-6">
+            <div className="w-full relative bg-gray-400/20 rounded-lg mb-6 text-white">
+                <AsyncImage
+                    imgUrl={show.image}
+                    className="h-96 rounded-lg mx-auto opacity-30"
+                />
+                <p className="absolute top-4 left-10 text-3xl text-shadow font-bold">{show.title}</p>
+                <div className="absolute top-16 left-10 flex gap-3">
+                    {
+                        show.genres.map(genreID => {
+                            return <p key={genreID} className="bg-purple-500 rounded-full py-1 px-2">{showGenres[genreID]}</p>
+                        })
+                    }
                 </div>
-                <div className="grow flex flex-col px-5">
-                    <p className="max-h-60 overflow-y-auto p-4 rounded-lg bg-gray-900">{show.description}</p>
+                <div className="absolute top-28 left-10 text-shadow flex w-4/5 justify-between">
+                    <p>Last updated: {timestampToMonth(show.updated)}</p>
+                    <p>{show.seasons > 1 ? `${show.seasons} Seasons` : `${show.seasons} Season`}</p>
                 </div>
+                <p className="absolute bottom-1 px-24 py-4 h-52 overflow-y-auto bg-gray-900/80 ">{show.description}</p>
             </div>
         </div>
     );
@@ -144,19 +158,21 @@ export function SeasonSelector({ seasonID }){
     };
 
     return (
-        <div>
-            <h1>Seasons</h1>
+        <div className="px-4">
+            <h1 className="text-white text-2xl font-bold">Seasons</h1>
+            <hr className="my-2 border-purple-300"/>
             <ImageSlider >
-                {sortedSeasons.map((el, index) => (
-                    <Link
-                        key={index}
-                        to={`/show/${show.id}/season/${el.season}`}
-                    >
-                        <AsyncImage imgUrl={el.image} className="size-40 rounded-lg"/>
-                    </Link>
+                {sortedSeasons.map(el => (
+                    <SliderItem>
+                        <Link
+                            to={`/show/${show.id}/season/${el.season}`}
+                        >
+                            <SmallSeasonView season={el}/>
+                        </Link>
+                    </SliderItem>
                 ))}
             </ImageSlider>
-
+            <p className="text-white text-xl font-bold mt-6 mb-4">Season {seasonID}</p>
             <ShowContext.Provider value={{ show, seasonID }}>
                 <EpisodeView episodes={
                     (show.seasons.find(el => el.season === parseInt(seasonID))).episodes
@@ -171,7 +187,7 @@ function EpisodeView({ episodes }){
     const { show, seasonID } = useContext(ShowContext);
 
     return (
-        <div className="w-full flex flex-row flex-wrap">
+        <div className="w-full flex flex-col">
             {
                 episodes.map((ep, index) => (
                     <Episode key={`${seasonID} ${index}`} ep={ep} />
@@ -183,7 +199,6 @@ function EpisodeView({ episodes }){
 
 
 function Episode({ ep }){
-    console.log("EPISODE::trigger")
     const { show, seasonID } = useContext(ShowContext);
     const { setActiveEpisode, userID } = useOutletContext();
 
@@ -220,15 +235,18 @@ function Episode({ ep }){
     };
 
     return (
-        <div className="bg-gray-100 p-2 my-2 rounded">
-            <p>Episode {ep.episode}</p>
-            <p>{ep.title}</p>
-            { userID ? isFavorite ?
-                <BsStarFill className="fill-green-500" onClick={toggleFavorite} /> :
-                <BsStar className="star " onClick={toggleFavorite} /> : null
-            }
-            <p>{ep.description}</p>
+        <div className="bg-gray-800 px-4 pb-6 my-2 rounded-lg text-gray-100 max-w-[800px] flex flex-col gap-2 items-start">
+            <div className="flex gap-6 justify-between items-center my-3">
+                { userID ? isFavorite ?
+                    <BsStarFill className="fill-yellow-500 size-6" onClick={toggleFavorite} /> :
+                    <BsStarFill className="fill-gray-600 size-6" onClick={toggleFavorite} /> : null
+                }
+                <p className="font-bold">Episode {ep.episode}</p>
+                <p className="grow font-semibold">{ep.title}</p>
+            </div>
+            <p className="px-6 py-2 min-h-8 max-h-28 overflow-y-auto bg-gray-900 rounded-lg">{ep.description ? ep.description : (<span><i className="fas fa-ban" /> No Description available</span>)}</p>
             <button
+                className="my-3"
                 onClick={()=>{
                     setActiveEpisode(
                         show.id,
@@ -236,8 +254,8 @@ function Episode({ ep }){
                         ep.episode
                     );
                 }}
-            >Play</button>
-            {progress ? <Progress key={progress} value={progress} size="sm"/> : null}
+            ><i className="fas fa-play" /> {progress ? "Continue Listening": "Play"}</button>
+            {progress ? <Progress key={progress} value={progress} color="purple" size="sm"/> : null}
         </div>
     );
 };

@@ -23,31 +23,28 @@ export function FullShowPage(){
 
     return (
         <>
-            <Link
+            {/* <Link
                 to="/"
                 className="inline-block bg-gray-200 rounded-lg px-4 py-2 z-10 mb-4"
             >
-                    <i className="fas fa-arrow-left" /> Go Back
-            </Link>
+                <i className="fas fa-arrow-left" /> Go Back
+            </Link> */}
+
             <Suspense fallback={<h1>Loading Show Header...</h1>}>
-                <Await
-                    resolve={previewsByIndex}
-                    children={indexedPreviews => 
+                <Await resolve={previewsByIndex}>
+                    {indexedPreviews => 
                         <ShowHeader show={indexedPreviews[showID]}/>
                     }
-                >
                 </Await>
             </Suspense>
             
             <Suspense fallback={<h1>Loading Seasons...</h1>}>
-                <Await
-                    resolve={shows[showID]}
-                    children={show =>
+                <Await resolve={shows[showID]}>
+                    {show =>
                         <ShowContext.Provider value={{ show }}>
                             <SeasonSelector seasonID={seasonID}/>
                         </ShowContext.Provider>
                     }
-                >
                 </Await>
             </Suspense>
         </>
