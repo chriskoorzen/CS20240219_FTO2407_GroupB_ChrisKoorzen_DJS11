@@ -122,7 +122,7 @@ export function SignUp({setUserID}){
                         </Typography>
                         <Input label="Password" size="lg" color="white" name="password" error={loginError}/>
                         <div className="-ml-2.5 -mt-3">
-                            <Checkbox label="Remember Me" name="stayLoggedIn" checked/>
+                            <Checkbox color="purple" label="Remember Me" name="stayLoggedIn"/>
                         </div>
                     </CardBody>
                     <CardFooter className="pt-0">
@@ -182,7 +182,7 @@ export function SignUp({setUserID}){
                         </Typography>
                         <Input label="Re-enter Password" size="lg" color="white" name="password-verify" error={passMatchError}/>
                         <div className="-ml-2.5 -mt-3">
-                            <Checkbox label="Remember Me" name="stayLoggedIn" checked/>
+                            <Checkbox color="purple" label="Remember Me" name="stayLoggedIn"/>
                         </div>
                     </CardBody>
                     <CardFooter className="pt-0">
