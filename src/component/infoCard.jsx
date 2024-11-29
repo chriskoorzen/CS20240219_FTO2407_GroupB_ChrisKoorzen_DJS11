@@ -73,6 +73,30 @@ export function SmallShowPreview({ show }){
 };
 
 
+export function SmallerShowPreview({ show }){
+
+    return (
+        <div
+            className="size-fit rounded-lg bg-gray-800 p-3 gap-3 text-white cursor-pointer grid grid-rows-[144px_36px] grid-cols-2"
+        >
+            <AsyncImage imgUrl={show.image} className="size-36 rounded-lg shrink-0"/>
+            <div className="w-36 h-52 flex flex-col gap-4">
+                <h6 className="text-xl font-bold line-clamp-2">{sanitizeHtmlLiterals(show.title)}</h6>
+                <p>{show.seasons > 1 ? `${show.seasons} Seasons` : `${show.seasons} Season`}</p>
+                <p className="text-sm"><span className="text-xs">Last Updated: </span>{timestampToMonth(show.updated)}</p>
+            </div>
+            <div className="col-span-2 my-3 flex gap-2 flex-wrap ">
+                {
+                    show.genres.map(genreID => {
+                        return <p key={genreID} className="bg-purple-500 rounded-full text-xs px-2 py-1 size-fit line-clamp-1">{showGenres[genreID]}</p>
+                    })
+                }
+            </div>
+        </div>
+    );
+};
+
+
 export function SmallGenrePreview({ genre }){
 
     return (
