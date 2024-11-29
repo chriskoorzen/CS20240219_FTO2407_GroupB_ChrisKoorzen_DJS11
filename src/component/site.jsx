@@ -53,8 +53,7 @@ export function SiteHeader({ userLogOutFn, setUserID, userID }){
 
 export function SiteFooter(){
     const { userID, episode } = useContext(AudioContext);
-    
-    // console.log("FOOTER::trigger::")
+
     if (episode === null){
         return (
             <div className="h-16 w-full bg-gray-900 flex items-center justify-center">
@@ -72,7 +71,6 @@ export function SiteFooter(){
         <Suspense>
             <Await resolve={shows[showID]}>
                 {show => {
-                    console.log("FOOTER::awaited", seasonID, episodeID, show)
                     const season = show.seasons.find(el => el.season === parseInt(seasonID));
                     const episode = season.episodes.find(el => el.episode === parseInt(episodeID));
                     const url = episode.file;
@@ -82,7 +80,6 @@ export function SiteFooter(){
                     if (userData !== null){
                         pro = userData.progress[showUUID.get(showID, seasonID, episodeID)];
                         pro = !pro ? 0 : parseFloat(pro); // if undefined or null, make zero, else get progress
-                        // console.log("progresSION", pro)
                     };
 
                     return (

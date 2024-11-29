@@ -13,7 +13,6 @@ import { AudioContext } from "../page/layouts";
 
 
 export function AudioPlayer({ audioUrl, progress, autoplay }){
-    // console.log("Audio 2::trigger", progress, audioUrl, autoplay)
 
     const { userID, episode } = useContext(AudioContext);
     const [maxPlaybackDuration, setMaxPlaybackDuration] = useState(0);
@@ -34,14 +33,12 @@ export function AudioPlayer({ audioUrl, progress, autoplay }){
 
     // -- Audio Element functionality --
     function handleLoadingProgress(){           // when still downloading data
-        // console.log("AUDIO:: download progress")
     };
     
     function handleMetaDataLoaded(audioEvent){       // when metadata is known eg. audio duration
         setMaxPlaybackDuration(Math.round(audioEvent.target.duration));
         setCurrentPlayback(Math.round(audioEvent.target.duration * progress));
         audioElement.current.fastSeek(Math.round(audioEvent.target.duration * progress));
-        // console.log("AUDIO:: meta Data Loaded", audioEvent.target.duration)
     };
 
     function handleFirstFrameReady(){           // current frame is loaded
@@ -50,11 +47,9 @@ export function AudioPlayer({ audioUrl, progress, autoplay }){
     };
 
     function handleAudioPlayPartlyReady(){      // when enough data has buffered to start playing
-        // console.log("AUDIO:: can start playing")
     };
 
     function handleAudioTimeUpdate(audioEvent){      // when playing or seeking
-        // console.log("AUDIO:: currentTime update")
         setCurrentPlayback(audioEvent.target.currentTime);
         audioSlider.current.value = audioEvent.target.currentTime;
         if(userID){
@@ -66,14 +61,12 @@ export function AudioPlayer({ audioUrl, progress, autoplay }){
 
     // -- Audio Element user interactions --
     function playAudio(){
-        // console.log("playAudio")
         audioElement.current.play()
             .catch((error)=>{console.error("audio play button click failed.", error)});
         setIsPlaying(true);
     };
 
     function stopAudio(){
-        // console.log("pauseAudio")
         audioElement.current.pause();
         setIsPlaying(false);
     };
@@ -81,7 +74,6 @@ export function AudioPlayer({ audioUrl, progress, autoplay }){
 
     // -- Audio Slider functionality --
     function handleUserDraggingSlider(sliderEvent){
-        // console.log("AUDIO::SLIDER dragging", sliderEvent.target.value)
         // update Audio time: will also trigger a timeUpdate event
         audioElement.current.fastSeek(sliderEvent.target.value);
     };
@@ -91,11 +83,9 @@ export function AudioPlayer({ audioUrl, progress, autoplay }){
     function volumeSliderDrag(volumeEvent){
         audioElement.current.volume = volumeEvent.target.value;
         setVolume(parseFloat(volumeEvent.target.value));
-        // console.log("volumeSliderDrag: Now at", volumeEvent.target.value)
     };
 
     function volumeSlideRelease(volumeEvent){
-        // console.log("volume slideRelease", volumeEvent.target.value);
         settings.update("volume", volumeEvent.target.value);
     };
 
@@ -106,13 +96,10 @@ export function AudioPlayer({ audioUrl, progress, autoplay }){
                 ref={audioElement}
                 src={audioUrl}
 
-                // onLoadStart={()=>{console.log("AUDIO:: initiating resource")}}
                 onProgress={handleLoadingProgress}
                 onLoadedMetadata={handleMetaDataLoaded}
                 onLoadedData={handleFirstFrameReady}
-                // onDurationChange={(audioEvent)=>{console.log("AUDIO:: duration updated", audioEvent.target.duration)}}
                 onCanPlay={handleAudioPlayPartlyReady}
-                // onCanPlayThrough={()=>{console.log("AUDIO:: can play everything")}}
 
                 onTimeUpdate={handleAudioTimeUpdate}
                 onEnded={stopAudio}

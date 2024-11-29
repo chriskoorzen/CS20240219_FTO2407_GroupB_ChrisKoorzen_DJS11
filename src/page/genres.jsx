@@ -29,7 +29,6 @@ export function GenresPage(){
                     <Await resolve={Promise.all([previewsByIndex, ...Object.values(genres)])}>
                         {genreData => {
                             const previewsByIndex = genreData[0];
-                            console.log("GENRES:::")
                             return genreData.slice(1).map((genre, index) => (
                                 <div className="w-full mb-20">
                                     <div className="relative bg-gray-400/20 rounded-lg mb-6">

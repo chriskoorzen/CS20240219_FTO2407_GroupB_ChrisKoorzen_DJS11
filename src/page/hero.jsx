@@ -42,7 +42,6 @@ export function LandingPage(){
                 <Await resolve={previews}>
                     {previews => {
                         const sortedPreviews = previews.toSorted((a, b) => a.title > b.title);
-                        console.log("RENDER")
                         return (
                             <>
                                 <Link
@@ -83,7 +82,6 @@ export function LandingPage(){
                     {data => {
                         const previewsByIndex = data[0];
                         let suggestions;
-                        console.log("rendereeer")
                         if (hasFavorites){
                             suggestions = generateUserSuggestions(
                                 Object.keys(users.getUserData(userID).favorites).map(UUID => showUUID.parse(UUID).showID),

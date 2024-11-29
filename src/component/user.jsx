@@ -27,7 +27,6 @@ export function SignUp({setUserID}){
 
     function logIn(event){
         event.preventDefault();
-        console.log("trying to log in...");
 
         const user = users.logIn(
             event.target.elements["username"].value,
@@ -48,7 +47,6 @@ export function SignUp({setUserID}){
 
     function signUp(event){
         event.preventDefault();
-        console.log("trying to sign up...");
 
         if (event.target.elements["password"].value
             !==

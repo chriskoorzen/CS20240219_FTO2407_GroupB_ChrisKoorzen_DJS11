@@ -14,11 +14,8 @@ export function FullShowPage(){
     const { showID, seasonID } = useParams();
     const { previewsByIndex, shows } = useRouteLoaderData("root");
 
-    console.log("Shows Page", showID, seasonID)
-
     if (!shows[showID]){    // Load data if not exists
         shows[showID] = getShowInfo([showID]);
-        console.log(`Show ${showID} not found`, shows);
     };
 
     return (

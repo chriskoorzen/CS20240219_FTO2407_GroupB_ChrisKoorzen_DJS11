@@ -214,7 +214,6 @@ function Episode({ ep }){
 
     function toggleFavorite(){
         const userData = users.getUserData(userID);
-        console.log("toggle favs", userData)
         if (userData === null) return;
 
         if (isFavorite){

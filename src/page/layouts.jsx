@@ -13,7 +13,6 @@ export function MainLayout(){
     const [userID, setUserID] = useState(users.findLoggedInUser());
     const [episode, setEpisode] = useState(null);
     const navigate = useNavigate();
-    console.log("LAYOUTS::trigger:: user is", userID)
 
     function logUserOut(){
         if (users.logOut(userID)){
@@ -23,7 +22,6 @@ export function MainLayout(){
     };
 
     function setActiveEpisode(showID, seasonID, episodeID){
-        console.log(`LAYOUTS::setActiveEpisode:: Selected show ${showID}, season ${seasonID}, ep ${episodeID}`)
         setEpisode(
             {showID, seasonID, episodeID}
         );
