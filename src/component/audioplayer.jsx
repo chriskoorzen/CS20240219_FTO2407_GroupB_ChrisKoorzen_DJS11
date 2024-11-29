@@ -129,7 +129,7 @@ export function AudioPlayer({ audioUrl, progress, autoplay }){
             }
 
             <input
-                className="grow h-2 rounded-lg cursor-pointer dark:bg-gray-700"
+                className="grow h-2 rounded-lg cursor-pointer dark:bg-gray-700 accent-purple-600"
                 ref={audioSlider}
                 type="range"
                 min={0}
@@ -157,7 +157,7 @@ export function AudioPlayer({ audioUrl, progress, autoplay }){
                 <MenuList className="h-fit min-w-fit bg-gray-800">
                     <input
                         ref={volumeSlider}
-                        className="h-28 outline-none"
+                        className="h-28 outline-none accent-purple-600"
                         orient="vertical"
                         type="range"
                         defaultValue={volume}

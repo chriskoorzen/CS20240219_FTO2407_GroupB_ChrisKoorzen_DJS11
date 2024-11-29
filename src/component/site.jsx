@@ -89,8 +89,8 @@ export function SiteFooter(){
                         <div className="h-16 w-full bg-gray-900 flex flex-row">
                             <Link to={`/show/${showID}/season/${seasonID}`} className="block w-1/2 h-full">
                                 <div className="size-full px-4 flex flex-col justify-center">
-                                    <div className="text-white flex flex-row justify-between">
-                                        <p className="font-bold">{sanitizeHtmlLiterals(show.title)}</p>
+                                    <div className="text-white flex flex-row">
+                                        <p className="font-bold mr-5">{sanitizeHtmlLiterals(show.title)}</p>
                                         <p>Season {seasonID}</p>
                                     </div>
                                     <div className="text-white flex flex-row">
