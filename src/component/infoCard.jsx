@@ -245,17 +245,20 @@ function Episode({ ep }){
                 <p className="grow font-semibold">{ep.title}</p>
             </div>
             <p className="px-6 py-2 min-h-8 max-h-28 overflow-y-auto bg-gray-900 rounded-lg">{ep.description ? ep.description : (<span><i className="fas fa-ban" /> No Description available</span>)}</p>
-            <button
-                className="my-3"
-                onClick={()=>{
-                    setActiveEpisode(
-                        show.id,
-                        seasonID,
-                        ep.episode
-                    );
-                }}
-            ><i className="fas fa-play" /> {progress ? "Continue Listening": "Play"}</button>
-            {progress ? <Progress key={progress} value={progress} color="purple" size="sm"/> : null}
+            <div className="flex flex-row justify-between items-center w-full">
+                <button
+                    className="my-3"
+                    onClick={()=>{
+                        setActiveEpisode(
+                            show.id,
+                            seasonID,
+                            ep.episode
+                        );
+                    }}
+                ><i className="fas fa-play" /> {progress ? "Continue Listening": "Play"}</button>
+                {progress ? (<p>{Math.floor(progress)}%</p>) : null}
+            </div>
+                {progress ? <Progress key={progress+ep.episode} value={progress} color="purple" size="sm"/> : null}
         </div>
     );
 };
