@@ -7,6 +7,7 @@ import { BsStar, BsStarFill } from "react-icons/bs";
 import { AsyncImage, ImageSlider } from "./basic";
 
 import { sanitizeHtmlLiterals } from "../utils/strings";
+import { timestampToMonth } from "../utils/datetime";
 import { showGenres } from "../api/server";
 import { ShowContext } from "../page/shows";
 import { users, showUUID } from "../api/storage";
@@ -16,14 +17,14 @@ export function FullShowPreview({ show }){
 
     return (
         <div 
-            className="rounded-lg bg-gray-900 p-3 flex gap-5 text-white cursor-pointer"
+            className="size-fit rounded-lg bg-gray-900 p-3 flex gap-5 text-white"
         >
             <AsyncImage imgUrl={show.image} className="size-96 rounded-lg shrink-0"/>
-            <div>
-                <h6 className="text-2xl font-bold mb-4">{sanitizeHtmlLiterals(show.title)}</h6>
+            <div className="w-[400px]">
+                <h6 className="text-2xl font-bold mb-4 text-center">{sanitizeHtmlLiterals(show.title)}</h6>
                 <div className="flex justify-between">
                     <p>{show.seasons > 1 ? `${show.seasons} Seasons` : `${show.seasons} Season`}</p>
-                    <p>{new Date(show.updated).toLocaleDateString(undefined, {year: "numeric",month: "short"})}</p>
+                    <p>{timestampToMonth(show.updated)}</p>
                 </div>
                 <div className="my-3 flex gap-5">
                     {
@@ -40,7 +41,31 @@ export function FullShowPreview({ show }){
                     >
                         Read More..
                     </Link>
-                    <button className="rounded-full bg-green-400 p-3">Play Now</button>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+
+export function SmallShowPreview({ show }){
+
+    return (
+        <div 
+            className="size-fit rounded-lg bg-gray-800 p-3 flex gap-5 text-white cursor-pointer"
+        >
+            <AsyncImage imgUrl={show.image} className="size-48 rounded-lg shrink-0"/>
+            <div className="w-48">
+                <h6 className="text-xl font-bold mb-4 line-clamp-2">{sanitizeHtmlLiterals(show.title)}</h6>
+                <div className="flex justify-between">
+                    <p>{show.seasons > 1 ? `${show.seasons} Seasons` : `${show.seasons} Season`}</p>
+                </div>
+                <div className="my-3 flex gap-2 flex-wrap">
+                    {
+                        show.genres.map(genreID => {
+                            return <p key={genreID} className="bg-purple-500 rounded-full text-sm p-2 size-fit">{showGenres[genreID]}</p>
+                        })
+                    }
                 </div>
             </div>
         </div>
@@ -123,6 +148,7 @@ function EpisodeView({ episodes }){
 
 
 function Episode({ ep }){
+    console.log("EPISODE::trigger")
     const { show, seasonID } = useContext(ShowContext);
     const { setActiveEpisode, userID } = useOutletContext();
 
@@ -176,7 +202,7 @@ function Episode({ ep }){
                     );
                 }}
             >Play</button>
-            {progress ? <Progress value={progress} size="sm"/> : null}
+            {progress ? <Progress key={progress} value={progress} size="sm"/> : null}
         </div>
     );
 };
