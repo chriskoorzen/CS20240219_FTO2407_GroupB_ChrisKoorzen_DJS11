@@ -17,7 +17,7 @@ export function FullShowPreview({ show }){
 
     return (
         <div 
-            className="size-fit rounded-lg bg-gray-900 p-3 flex gap-5 text-white"
+            className="size-fit rounded-lg bg-gray-800 p-5 flex gap-5 text-white"
         >
             <AsyncImage imgUrl={show.image} className="size-96 rounded-lg shrink-0"/>
             <div className="w-[400px]">
@@ -26,10 +26,10 @@ export function FullShowPreview({ show }){
                     <p>{show.seasons > 1 ? `${show.seasons} Seasons` : `${show.seasons} Season`}</p>
                     <p>{timestampToMonth(show.updated)}</p>
                 </div>
-                <div className="my-3 flex gap-5">
+                <div className="my-3 flex gap-4">
                     {
                         show.genres.map(genreID => {
-                            return <p key={genreID} className="bg-purple-500 rounded-full p-2">{showGenres[genreID]}</p>
+                            return <p key={genreID} className="bg-purple-500 rounded-full px-2 py-1">{showGenres[genreID]}</p>
                         })
                     }
                 </div>
@@ -37,9 +37,9 @@ export function FullShowPreview({ show }){
                 <div className="mt-5 flex justify-evenly">
                     <Link
                         to={`/show/${show.id}/season/1`}
-                        className="rounded-full p-3 bg-gray-200 text-black"
+                        className="rounded-full px-3 py-2 bg-gray-200 text-black"
                     >
-                        Read More..
+                        Read More <i className="fas fa-arrow-right" />
                     </Link>
                 </div>
             </div>
@@ -63,7 +63,7 @@ export function SmallShowPreview({ show }){
                 <div className="my-3 flex gap-2 flex-wrap">
                     {
                         show.genres.map(genreID => {
-                            return <p key={genreID} className="bg-purple-500 rounded-full text-sm p-2 size-fit">{showGenres[genreID]}</p>
+                            return <p key={genreID} className="bg-purple-500 rounded-full text-sm px-2 py-1 size-fit">{showGenres[genreID]}</p>
                         })
                     }
                 </div>
