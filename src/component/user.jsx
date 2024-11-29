@@ -10,20 +10,11 @@ import {
     Input
 } from "@material-tailwind/react";
 
+
 import { users } from "../api/storage";
 
 
-export function DashBoard({userID, setUserID}){
-
-    return (
-        <div className="size-full flex justify-center items-center">
-            {userID ? (<h1>Welcome {users.getUserData(userID).name}</h1>): <SignUp setUserID={setUserID}/>}
-        </div>
-    );
-};
-
-
-function SignUp({setUserID}){
+export function SignUp({setUserID}){
     const [openLogin, setOpenLogin] = useState(false);
     const loginForm = useRef(null);
     const [loginError, setLoginError] = useState(false);
@@ -88,8 +79,7 @@ function SignUp({setUserID}){
     };
 
     return (
-        <div className="grow flex flex-col justify-center items-center gap-3">
-            <h1 className="text-white font-bold">Log In To See Your Favorite Shows</h1>
+        <div className="flex flex-col justify-center items-center gap-3">
             <div className="flex items-center justify-center gap-2">
                 <Button
                     onClick={()=>{setOpenLogin(true)}}
@@ -132,7 +122,7 @@ function SignUp({setUserID}){
                         </Typography>
                         <Input label="Password" size="lg" color="white" name="password" error={loginError}/>
                         <div className="-ml-2.5 -mt-3">
-                            <Checkbox label="Remember Me" name="stayLoggedIn"/>
+                            <Checkbox label="Remember Me" name="stayLoggedIn" checked/>
                         </div>
                     </CardBody>
                     <CardFooter className="pt-0">
@@ -192,7 +182,7 @@ function SignUp({setUserID}){
                         </Typography>
                         <Input label="Re-enter Password" size="lg" color="white" name="password-verify" error={passMatchError}/>
                         <div className="-ml-2.5 -mt-3">
-                            <Checkbox label="Remember Me" name="stayLoggedIn"/>
+                            <Checkbox label="Remember Me" name="stayLoggedIn" checked/>
                         </div>
                     </CardBody>
                     <CardFooter className="pt-0">
