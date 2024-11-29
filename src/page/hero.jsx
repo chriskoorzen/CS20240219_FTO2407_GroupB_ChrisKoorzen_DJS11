@@ -4,7 +4,7 @@ import { useRouteLoaderData } from "react-router";
 
 import { Dialog } from "@material-tailwind/react";
 
-import { ImageSlider, ImageSlider2, SliderItem } from "../component/basic";
+import { ImageSlider, SliderItem } from "../component/basic";
 import { FullShowPreview, SmallShowPreview, SmallGenrePreview } from "../component/infoCard";
 
 import { genreStockImages, showGenres } from "../api/server";
@@ -52,7 +52,9 @@ export function LandingPage(){
                                 </Link>
                                 <ImageSlider setActiveIndexCallback={(pos)=>{selectShowPreview(pos, sortedPreviews)}}>
                                     {sortedPreviews.map(el => (
-                                        <SmallShowPreview show={el} />
+                                        <SliderItem>
+                                            <SmallShowPreview show={el} />
+                                        </SliderItem>
                                     ))}
                                 </ImageSlider>
 
@@ -97,13 +99,13 @@ export function LandingPage(){
                             <>
                             <div className="my-8">
                                 <h1 className="text-lg text-white">Recommended for You</h1>
-                                <ImageSlider2 setActiveIndexCallback={(pos)=>{selectShowPreview(pos, suggestions)}}>
+                                <ImageSlider setActiveIndexCallback={(pos)=>{selectShowPreview(pos, suggestions)}}>
                                     {suggestions.map(el => (
                                         <SliderItem key={el.title}>
                                             <SmallShowPreview show={el} />
                                         </SliderItem>
                                     ))}
-                                </ImageSlider2>
+                                </ImageSlider>
                             </div>
 
                             <div className="my-8">
@@ -113,13 +115,13 @@ export function LandingPage(){
                                 >
                                     Browse Genres <i className="fas fa-arrow-right" />
                                 </Link>
-                                <ImageSlider2>
+                                <ImageSlider>
                                     {genreStockImages.map((el, index)=> (
                                         <SliderItem key={showGenres[el.id]}>
                                             <SmallGenrePreview genre={el}/>
                                         </SliderItem>
                                     ))}
-                                </ImageSlider2>
+                                </ImageSlider>
                             </div>
                             </>
                         );

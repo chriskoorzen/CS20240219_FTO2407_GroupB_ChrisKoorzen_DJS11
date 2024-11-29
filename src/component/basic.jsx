@@ -1,4 +1,4 @@
-import { useState, useRef, Children, useEffect } from "react";
+import { useState, useRef, Children, useEffect, cloneElement } from "react";
 
 
 export function AsyncImage({ imgUrl, className, alt }){
@@ -96,18 +96,24 @@ export function ImageSlider({ setActiveIndexCallback, children }) {
             </>) : null}
             <div
                 ref={container}
-                className="flex gap-6 overflow-x-auto snap-x snap-mandatory"
+                className="flex gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth"
             >
-                { Children.map(children, (child, index) => (
-                    <div
-                        key={index}
-                        className="snap-center snap-always shrink-0 first:ml-10 last:mr-10"
-                        onClick={clickSelect}
-                    >
-                        {child}
-                    </div>
+                { Children.map(children, (child) => (
+                    cloneElement(child, {
+                        clickSelect
+                    })
                 ))}
             </div>
+        </div>
+    );
+};
+
+
+export function SliderItem({children, clickSelect}){
+
+    return (
+        <div className="snap-center snap-always shrink-0 first:ml-10 last:mr-10" onClick={clickSelect}>
+            {children}
         </div>
     );
 };
