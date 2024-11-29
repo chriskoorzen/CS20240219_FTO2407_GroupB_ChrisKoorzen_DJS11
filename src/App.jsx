@@ -1,6 +1,6 @@
 import { createBrowserRouter, createRoutesFromElements, Route } from "react-router-dom";
 
-import { MainLayout } from "./page/layouts";
+import { MainLayout, LoginRequired } from "./page/layouts";
 import { LandingPage } from "./page/hero";
 import { FullShowPage } from "./page/shows";
 import { BrowsePage } from "./page/browse";
@@ -27,8 +27,10 @@ export const App = createBrowserRouter(
             <Route path="browse/" element={<BrowsePage />} />
             <Route path="browse/genres/" element={<GenresPage />} />
             <Route path="show/:showID/season/:seasonID" element={<FullShowPage />} />
-            <Route path=":user/favorites" element={<FavoritesPage />} />
-            <Route path=":user/history" element={<HistoryPage />} />
+            <Route element={<LoginRequired />}>
+                <Route path=":user/favorites" element={<FavoritesPage />} />
+                <Route path=":user/history" element={<HistoryPage />} />
+            </Route>
         </Route>
     )
 );

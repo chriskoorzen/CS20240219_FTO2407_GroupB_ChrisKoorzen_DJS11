@@ -1,5 +1,5 @@
 import { Suspense, useState } from "react";
-import { useRouteLoaderData, Await, useOutletContext, Link, replace } from "react-router-dom";
+import { useRouteLoaderData, Await, useOutletContext, Link, useNavigate } from "react-router-dom";
 
 import { Progress, Button } from "@material-tailwind/react";
 import { AsyncImage } from "../component/basic";
@@ -13,10 +13,19 @@ export function HistoryPage(){
     const { previewsByIndex } = useRouteLoaderData("root");
     const { userID } = useOutletContext();
     const [ clear, setClear ] = useState(false);
+    const navigate = useNavigate();
 
     function clearHistory(){
         const data = users.getUserData(userID);
         data.history = {};
+        users.updateData(userID, data);
+        setClear(true);
+        navigate(".");
+    };
+
+    function clearProgress(){
+        const data = users.getUserData(userID);
+        data.progress = {};
         users.updateData(userID, data);
         setClear(true);
     };
@@ -29,6 +38,10 @@ export function HistoryPage(){
                     className="bg-purple-400"
                     onClick={clearHistory}
                 >Clear History</Button>
+                <Button
+                    className="bg-red-400"
+                    onClick={clearProgress}
+                >Reset Listening Progress</Button>
             </div>
             <Suspense fallback={<LoadingSpinner loadingText={"History"}/>}>
                 <Await resolve={previewsByIndex}>
@@ -43,9 +56,12 @@ export function HistoryPage(){
                         return (
                             h.map(el => {
                                 const { showID, seasonID, episodeID } = showUUID.parse(el[1]);
-                                const progress = userData.progress[el[1]];
+                                let progress;
+                                if (userData.progress[el[1]]){
+                                    progress = userData.progress[el[1]];
+                                };
                                 return (
-                                    <div key={clear} className="text-white p-3 bg-gray-800 rounded-lg m-2 w-96">
+                                    <div key={el[1]+String(clear)} className="text-white p-3 bg-gray-800 rounded-lg m-2 w-96">
                                         <p className="text-lg font-bold">{previewsByIndex[showID].title}</p>
                                         <div className="flex items-center">
                                             <p className="mr-6">Season {seasonID}</p>

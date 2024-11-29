@@ -33,7 +33,7 @@ export function FavoritesPage(){
             break;
         case "By Show":
             favorites = users.getUserData(userID).favorites;
-            if (favorites.length){
+            if (Object.keys(favorites).length){
                 grouped = Object.keys(favorites).reduce((obj, value)=>{
                     const {showID, seasonID, episodeID} = showUUID.parse(value);
                     const showName = favorites[value].showTitle;

@@ -1,5 +1,5 @@
 import { useState, createContext } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate, useOutletContext, Navigate } from "react-router-dom";
 
 import { SiteHeader, SiteFooter } from "../component/site";
 import { DashBoard } from "../component/navigation";
@@ -55,3 +55,20 @@ export function MainLayout(){
         </div>
     );
 };
+
+
+export function LoginRequired(){
+    const { userID, setActiveEpisode } = useOutletContext();
+
+    if (userID) {
+        // Allow routing to Protected Route
+        return <Outlet key={userID} context={{ userID, setActiveEpisode }}/>
+    }
+
+    return (
+        <Navigate
+            to="/" 
+            replace
+        />
+    )
+}
