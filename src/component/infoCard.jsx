@@ -9,8 +9,8 @@ import { AsyncImage, ImageSlider } from "./basic";
 import { sanitizeHtmlLiterals } from "../utils/strings";
 import { timestampToMonth } from "../utils/datetime";
 import { showGenres } from "../api/server";
-import { ShowContext } from "../page/shows";
 import { users, showUUID } from "../api/storage";
+import { ShowContext } from "../page/shows";
 
 
 export function FullShowPreview({ show }){
@@ -68,6 +68,17 @@ export function SmallShowPreview({ show }){
                     }
                 </div>
             </div>
+        </div>
+    );
+};
+
+
+export function SmallGenrePreview({ genre }){
+
+    return (
+        <div className="relative w-72 h-52 bg-gray-800 rounded-lg">
+            <AsyncImage imgUrl={genre.image} className="pt-2"/>
+            <p className="absolute bottom-3 text-white text-xl font-bold text-wrap text-shadow px-3">{showGenres[genre.id]}</p>
         </div>
     );
 };

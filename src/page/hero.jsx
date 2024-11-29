@@ -1,11 +1,11 @@
-import { Suspense, useRef, useState } from "react";
+import { Suspense, useState } from "react";
 import { Await, Link, useOutletContext } from "react-router-dom";
 import { useRouteLoaderData } from "react-router";
 
 import { Dialog } from "@material-tailwind/react";
 
-import { FullShowPreview, SmallShowPreview } from "../component/infoCard";
-import { AsyncImage, ImageSlider, ImageSlider2, SliderItem } from "../component/basic";
+import { ImageSlider, ImageSlider2, SliderItem } from "../component/basic";
+import { FullShowPreview, SmallShowPreview, SmallGenrePreview } from "../component/infoCard";
 
 import { genreStockImages, showGenres } from "../api/server";
 import { users, showUUID } from "../api/storage";
@@ -34,7 +34,7 @@ export function LandingPage(){
                 className="md:size-fit lg:size-fit 2xl:size-fit md:max-w-fit lg:max-w-fit 2xl:max-w-fit md:min-w-fit lg:min-w-fit 2xl:min-w-fit">
                 <FullShowPreview show={showObject}/>
             </Dialog>
-            <h1 className="text-white text-3xl font-bold text-center">
+            <h1 className="text-white text-3xl font-bold text-center mb-12 mt-5">
                 Discover the best shows from around the world
             </h1>
             <Suspense fallback={<h1 className="text-2xl font-bold p-4 text-center">Loading blog posts...</h1>}>
@@ -105,6 +105,7 @@ export function LandingPage(){
                                     ))}
                                 </ImageSlider2>
                             </div>
+
                             <div className="my-8">
                                 <Link
                                     to="/browse/genres"
@@ -115,10 +116,7 @@ export function LandingPage(){
                                 <ImageSlider2>
                                     {genreStockImages.map((el, index)=> (
                                         <SliderItem key={showGenres[el.id]}>
-                                        <div className="relative w-48 h-36 bg-gray-900 rounded-lg">
-                                            <AsyncImage imgUrl={el.image} className="pt-2"/>
-                                            <p className="absolute bottom-3 text-white font-bold text-wrap text-shadow px-3">{showGenres[el.id]}</p>
-                                        </div>
+                                            <SmallGenrePreview genre={el}/>
                                         </SliderItem>
                                     ))}
                                 </ImageSlider2>
