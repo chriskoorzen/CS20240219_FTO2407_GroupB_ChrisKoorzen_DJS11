@@ -112,7 +112,7 @@ export function ImageSlider({ setActiveIndexCallback, children }) {
 export function SliderItem({children, clickSelect}){
 
     return (
-        <div className="snap-center snap-always shrink-0 first:ml-10 last:mr-10" onClick={clickSelect}>
+        <div className="snap-center snap-always shrink-0 first:ml-4 last:mr-4" onClick={clickSelect}>
             {children}
         </div>
     );
